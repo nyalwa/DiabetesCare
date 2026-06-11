@@ -1,0 +1,254 @@
+{% extends 'base_user.html' %}
+{% block title %}General Triage — Diabetes Detection System{% endblock %}
+{% block page_title %}General Triage{% endblock %}
+
+{% block content %}
+<style>
+    .triage-card {
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        border: 1px solid rgba(0,0,0,0.05);
+        overflow: hidden;
+    }
+
+    .form-header {
+        background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+        color: white;
+        padding: 20px 30px;
+        font-size: 1.25rem;
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .triage-form {
+        padding: 40px;
+    }
+
+    .form-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 25px 50px;
+    }
+
+    .form-group label {
+        display: block;
+        font-size: 0.85rem;
+        color: var(--text-dark);
+        margin-bottom: 8px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .form-group input, .form-group select, .form-group textarea {
+        width: 100%;
+        padding: 12px 16px;
+        border: 1.5px solid #dce3ea;
+        border-radius: 8px;
+        font-size: 1rem;
+        background: #fafbfc;
+        transition: all 0.25s;
+    }
+
+    .form-group input:focus, .form-group select:focus {
+        border-color: var(--secondary);
+        box-shadow: 0 0 0 3px rgba(39, 174, 96, 0.1);
+        background: white;
+        outline: none;
+    }
+
+    .symptoms-section {
+        margin-top: 40px;
+        background: #f8fafc;
+        padding: 30px;
+        border-radius: 12px;
+        border: 1px solid #edf2f7;
+    }
+
+    .symptoms-section h5 {
+        font-size: 1.1rem;
+        color: var(--primary);
+        margin-bottom: 25px;
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .symptoms-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 20px;
+    }
+
+    .checkbox-group {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        font-size: 0.95rem;
+        color: var(--text-dark);
+        font-weight: 500;
+    }
+
+    .checkbox-group input {
+        width: 20px;
+        height: 20px;
+        cursor: pointer;
+        accent-color: var(--secondary);
+    }
+
+    .form-actions {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 40px;
+        padding-top: 30px;
+        border-top: 2px solid #f1f5f9;
+    }
+
+    .btn-next {
+        background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+        color: white;
+        padding: 12px 40px;
+        font-weight: 700;
+        border-radius: 8px;
+        box-shadow: 0 4px 15px rgba(26, 60, 94, 0.3);
+        border: none;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .btn-next:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(39, 174, 96, 0.4);
+        color: white;
+    }
+
+    @media (max-width: 768px) {
+        .form-grid { grid-template-columns: 1fr; }
+        .symptoms-grid { grid-template-columns: 1fr 1fr; }
+    }
+</style>
+
+<div class="triage-card">
+    <div class="form-header">
+        <i class="bi bi-person-vcard-fill"></i>
+        General Triage — Patient Information
+    </div>
+    
+    <form action="{{ url_for('general_triage') }}" method="POST" class="triage-form">
+        <div class="form-grid">
+            <!-- Left Column -->
+            <div class="column">
+                <div class="mb-4">
+                    <label class="form-label">Full Name</label>
+                    <input type="text" class="form-control" value="{{ user.full_name }}" readonly disabled>
+                </div>
+                
+                <div class="mb-4">
+                    <label class="form-label">Age (Years)</label>
+                    <input type="number" name="age" class="form-control" required placeholder="e.g. 32">
+                </div>
+
+                <div class="mb-4">
+                    <label class="form-label">Gender</label>
+                    <select name="gender" class="form-select" required>
+                        <option value="" disabled selected>Select Gender</option>
+                        <option value="Female">Female</option>
+                        <option value="Male">Male</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+
+                <div class="mb-4">
+                    <label class="form-label">Weight (kg)</label>
+                    <input type="number" step="0.1" name="weight" class="form-control" required placeholder="e.g. 72">
+                </div>
+
+                <div class="mb-4">
+                    <label class="form-label">Height (cm)</label>
+                    <input type="number" step="0.1" name="height" class="form-control" required placeholder="e.g. 165">
+                </div>
+            </div>
+
+            <!-- Right Column -->
+            <div class="column">
+                <div class="mb-4">
+                    <label class="form-label">Blood Pressure (mm Hg)</label>
+                    <input type="text" name="blood_pressure" class="form-control" required placeholder="e.g. 118/76">
+                </div>
+
+                <div class="mb-4">
+                    <label class="form-label">Do you smoke?</label>
+                    <select name="smoking" class="form-select">
+                        <option value="No">No</option>
+                        <option value="Yes">Yes</option>
+                        <option value="Occasionally">Occasionally</option>
+                    </select>
+                </div>
+
+                <div class="mb-4">
+                    <label class="form-label">Physical Activity Level</label>
+                    <select name="activity_level" class="form-select">
+                        <option value="Sedentary">Sedentary (Little/No exercise)</option>
+                        <option value="Light">Light (1-2 days/week)</option>
+                        <option value="Moderate" selected>Moderate (3-5 days/week)</option>
+                        <option value="Active">Active (6-7 days/week)</option>
+                    </select>
+                </div>
+
+                <div class="mb-4">
+                    <label class="form-label">Family History of Diabetes?</label>
+                    <select name="family_history" class="form-select">
+                        <option value="No">No</option>
+                        <option value="Yes">Yes</option>
+                        <option value="Unsure">Unsure</option>
+                    </select>
+                </div>
+
+                <div class="mb-4">
+                    <label class="form-label">Current Medications (if any)</label>
+                    <input type="text" name="medications" class="form-control" placeholder="e.g. None">
+                </div>
+            </div>
+        </div>
+
+        <div class="symptoms-section">
+            <h5 style="color: var(--primary);"><i class="bi bi-clipboard2-pulse"></i> Presenting Symptoms (Select all that apply):</h5>
+            <div class="symptoms-grid">
+                <div class="checkbox-group">
+                    <input type="checkbox" name="symptoms" value="Excessive thirst" id="thirst">
+                    <label for="thirst">Excessive thirst</label>
+                </div>
+                <div class="checkbox-group">
+                    <input type="checkbox" name="symptoms" value="Frequent urination" id="urination">
+                    <label for="urination">Frequent urination</label>
+                </div>
+                <div class="checkbox-group">
+                    <input type="checkbox" name="symptoms" value="Unexplained weight loss" id="weight_loss">
+                    <label for="weight_loss">Unexplained weight loss</label>
+                </div>
+                <div class="checkbox-group">
+                    <input type="checkbox" name="symptoms" value="Blurred vision" id="vision">
+                    <label for="vision">Blurred vision</label>
+                </div>
+                <div class="checkbox-group">
+                    <input type="checkbox" name="symptoms" value="Fatigue / weakness" id="fatigue">
+                    <label for="fatigue">Fatigue / weakness</label>
+                </div>
+                <div class="checkbox-group">
+                    <input type="checkbox" name="symptoms" value="Slow-healing wounds" id="wounds">
+                    <label for="wounds">Slow-healing wounds</label>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-actions">
+            <a href="{{ url_for('dashboard') }}" class="btn btn-outline-secondary">← Back to Dashboard</a>
+            <button type="submit" class="btn btn-next">Save & Continue to Assessment →</button>
+        </div>
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,100 @@
+{% extends 'base_user.html' %}
+{% block title %}My Profile — Diabetes Detection System{% endblock %}
+{% block page_title %}My Profile{% endblock %}
+
+{% block content %}
+<div class="row">
+    <!-- Profile Info -->
+    <div class="col-lg-6 mb-4">
+        <div class="card shadow-sm h-100 border-0">
+            <div class="card-header bg-primary text-white p-3">
+                <h5 class="mb-0 fw-bold"><i class="bi bi-person-badge me-2"></i> Personal Details</h5>
+            </div>
+            <div class="card-body p-4">
+                
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        {% for category, message in messages %}
+                            {% if 'profile' in category or category in ['success', 'danger'] %}
+                            <div class="alert alert-{{ category | replace('profile_', '') }} alert-dismissible fade show">
+                                {{ message }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                            </div>
+                            {% endif %}
+                        {% endfor %}
+                    {% endif %}
+                {% endwith %}
+
+                <form method="POST" action="{{ url_for('profile') }}">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold text-muted">Full Name</label>
+                        <input type="text" class="form-control" value="{{ user.full_name }}" readonly>
+                        <div class="form-text">Name changes must be verified through the clinic.</div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label fw-bold text-muted">Email Address</label>
+                        <input type="email" class="form-control" value="{{ user.email }}" readonly>
+                        <div class="form-text">Email address cannot be changed.</div>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label class="form-label fw-bold">Phone Number</label>
+                        <input type="tel" name="phone" class="form-control" value="{{ user.phone }}" required>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary w-100 fw-bold">
+                        <i class="bi bi-save me-1"></i> Update Contact Info
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Security Settings -->
+    <div class="col-lg-6 mb-4">
+        <div class="card shadow-sm h-100 border-0">
+            <div class="card-header bg-dark text-white p-3">
+                <h5 class="mb-0 fw-bold"><i class="bi bi-shield-lock me-2"></i> Security Settings</h5>
+            </div>
+            <div class="card-body p-4">
+                <p class="text-muted small mb-4">You can update your password below. You must provide your current password to authorize changes.</p>
+                
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        {% for category, message in messages %}
+                            {% if 'security' in category %}
+                            <div class="alert alert-{{ category | replace('security_', '') }} alert-dismissible fade show">
+                                {{ message }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                            </div>
+                            {% endif %}
+                        {% endfor %}
+                    {% endif %}
+                {% endwith %}
+
+                <form method="POST" action="{{ url_for('change_password') }}">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Current Password</label>
+                        <input type="password" name="current_password" class="form-control" required>
+                    </div>
+                    <hr class="my-4 text-muted">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">New Password</label>
+                        <input type="password" name="new_password" class="form-control" required minlength="6">
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label class="form-label fw-bold">Confirm New Password</label>
+                        <input type="password" name="confirm_password" class="form-control" required minlength="6">
+                    </div>
+
+                    <button type="submit" class="btn btn-danger w-100 fw-bold">
+                        <i class="bi bi-key-fill me-1"></i> Update Password
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

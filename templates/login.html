@@ -1,0 +1,199 @@
+{% extends 'base.html' %}
+{% block title %}Login — DiabetesCare{% endblock %}
+
+{% block content %}
+<div class="unified-login-bg">
+
+  <!-- Decorative blobs -->
+  <div class="login-blob login-blob-1"></div>
+  <div class="login-blob login-blob-2"></div>
+
+  <div class="unified-login-wrap">
+
+    <!-- Brand mark -->
+    <div class="unified-login-brand">
+      <i class="bi bi-heart-pulse-fill"></i>
+      Diabetes<span>Care</span>
+    </div>
+    <p class="unified-login-tagline">Sign in to your health dashboard</p>
+
+    <!-- Card -->
+    <div class="unified-login-card">
+
+      <!-- Role selector tabs -->
+      <div class="unified-role-tabs">
+
+        <input type="radio" name="role_choice" id="rc-patient"
+               class="role-radio" value="patient"
+               {% if selected_role == 'patient' %}checked{% endif %}>
+        <label for="rc-patient" class="role-tab-label" onclick="selectRole('patient')">
+          <i class="bi bi-person-heart"></i>
+          <span>Patient</span>
+        </label>
+
+        <input type="radio" name="role_choice" id="rc-doctor"
+               class="role-radio" value="doctor"
+               {% if selected_role == 'doctor' %}checked{% endif %}>
+        <label for="rc-doctor" class="role-tab-label" onclick="selectRole('doctor')">
+          <i class="bi bi-person-badge-fill"></i>
+          <span>Doctor</span>
+        </label>
+
+        <input type="radio" name="role_choice" id="rc-admin"
+               class="role-radio" value="admin"
+               {% if selected_role == 'admin' %}checked{% endif %}>
+        <label for="rc-admin" class="role-tab-label" onclick="selectRole('admin')">
+          <i class="bi bi-shield-lock-fill"></i>
+          <span>Admin</span>
+        </label>
+
+      </div><!-- /role tabs -->
+
+      <!-- Error -->
+      {% if error %}
+      <div class="unified-login-error">
+        <i class="bi bi-exclamation-triangle-fill me-2"></i>{{ error }}
+      </div>
+      {% endif %}
+
+      <!-- Form -->
+      <form method="POST" id="loginForm" class="unified-login-form">
+        <input type="hidden" name="role" id="roleInput" value="{{ selected_role }}">
+
+        <!-- Identifier -->
+        <div class="ulg-field">
+          <label class="ulg-label" id="identifierLabel">
+            <i class="bi bi-envelope-fill me-1"></i>
+            <span id="identifierLabelText">Email Address</span>
+          </label>
+          <div class="ulg-input-wrap">
+            <i class="bi bi-envelope-fill ulg-input-icon" id="identifierIcon"></i>
+            <input type="email"
+                   name="identifier"
+                   id="identifierInput"
+                   class="ulg-input"
+                   placeholder="Enter your email"
+                   autocomplete="username"
+                   required autofocus>
+          </div>
+        </div>
+
+        <!-- Password -->
+        <div class="ulg-field">
+          <div class="ulg-label-row">
+            <label class="ulg-label mb-0">
+              <i class="bi bi-lock-fill me-1"></i>Password
+            </label>
+            <a href="{{ url_for('forgot_password') }}"
+               class="ulg-forgot" id="forgotLink">Forgot password?</a>
+          </div>
+          <div class="ulg-input-wrap">
+            <i class="bi bi-lock-fill ulg-input-icon"></i>
+            <input type="password"
+                   name="password"
+                   id="passwordInput"
+                   class="ulg-input ulg-input-pw"
+                   placeholder="Enter your password"
+                   autocomplete="current-password"
+                   required>
+            <button type="button" class="ulg-eye-btn" onclick="togglePassword()"
+                    tabindex="-1" aria-label="Toggle password visibility">
+              <i class="bi bi-eye-fill" id="eyeIcon"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Submit -->
+        <button type="submit" class="ulg-submit">
+          <i class="bi bi-box-arrow-in-right me-2"></i>
+          Sign in as <span id="roleLabel">Patient</span>
+        </button>
+      </form>
+
+      <!-- Divider + Register (patient only) -->
+      <div id="registerSection" class="ulg-register">
+        <span class="ulg-divider-text">New to DiabetesCare?</span>
+        <a href="{{ url_for('register') }}" class="ulg-register-link">
+          <i class="bi bi-person-plus-fill me-1"></i>Create an account
+        </a>
+      </div>
+
+    </div><!-- /card -->
+
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  const roleConfig = {
+    patient: {
+      labelText:   'Email Address',
+      iconClass:   'bi-envelope-fill',
+      placeholder: 'Enter your email',
+      inputType:   'email',
+      roleLabel:   'Patient',
+      showRegister: true,
+      showForgot:  true,
+    },
+    doctor: {
+      labelText:   'Email Address',
+      iconClass:   'bi-envelope-fill',
+      placeholder: 'Enter your doctor email',
+      inputType:   'email',
+      roleLabel:   'Doctor',
+      showRegister: false,
+      showForgot:  false,
+    },
+    admin: {
+      labelText:   'Username',
+      iconClass:   'bi-person-badge-fill',
+      placeholder: 'Enter your username',
+      inputType:   'text',
+      roleLabel:   'Admin',
+      showRegister: false,
+      showForgot:  false,
+    },
+  };
+
+  function selectRole(role) {
+    document.getElementById('roleInput').value = role;
+
+    const cfg = roleConfig[role];
+
+    // Identifier field
+    document.getElementById('identifierLabelText').textContent = cfg.labelText;
+    const icon = document.getElementById('identifierIcon');
+    icon.className = 'bi ' + cfg.iconClass + ' ulg-input-icon';
+    const inp = document.getElementById('identifierInput');
+    inp.type        = cfg.inputType;
+    inp.placeholder = cfg.placeholder;
+
+    // Submit label
+    document.getElementById('roleLabel').textContent = cfg.roleLabel;
+
+    // Register section
+    document.getElementById('registerSection').style.display =
+      cfg.showRegister ? '' : 'none';
+
+    // Forgot password link
+    document.getElementById('forgotLink').style.display =
+      cfg.showForgot ? '' : 'none';
+  }
+
+  function togglePassword() {
+    const f = document.getElementById('passwordInput');
+    const i = document.getElementById('eyeIcon');
+    if (f.type === 'password') {
+      f.type = 'text';
+      i.className = 'bi bi-eye-slash-fill';
+    } else {
+      f.type = 'password';
+      i.className = 'bi bi-eye-fill';
+    }
+  }
+
+  // Initialise on load with server-set role
+  selectRole('{{ selected_role }}');
+</script>
+{% endblock %}

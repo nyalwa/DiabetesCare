@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Doctor Portal{% endblock %} — Diabetes Detection System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        .doctor-sidebar {
+            background-color: var(--primary) !important;
+            border-right: none !important;
+            box-shadow: 4px 0 20px rgba(0,0,0,0.15) !important;
+        }
+        .doctor-sidebar-brand {
+            padding: 25px 20px;
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: white;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        .doctor-sidebar-role {
+            padding: 10px 20px;
+            color: rgba(255,255,255,0.6);
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 700;
+        }
+        .doctor-nav .nav-link {
+            color: rgba(255,255,255,0.8) !important;
+            padding: 15px 20px !important;
+            font-size: 1.21rem;
+            font-weight: 600;
+            transition: all 0.2s;
+            border-left: 4px solid transparent;
+        }
+        .doctor-nav .nav-link i {
+            font-size: 1.28rem;
+            width: 28px;
+        }
+        .doctor-nav .nav-link:hover {
+            background-color: rgba(255,255,255,0.1);
+            color: white !important;
+        }
+        .doctor-nav .nav-link.active {
+            background-color: rgba(255,255,255,0.1);
+            color: white !important;
+            border-left: 4px solid var(--secondary);
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="sidebar doctor-sidebar">
+        <div class="doctor-sidebar-brand">
+            <i class="bi bi-heart-pulse-fill me-2"></i>
+            Diabetes<span class="brand-care"> Detection System</span>
+        </div>
+        <div class="doctor-sidebar-role">
+            Medical Specialist
+        </div>
+        <nav class="nav flex-column mt-3 doctor-nav">
+            <a href="{{ url_for('doctor_dashboard') }}" class="nav-link {% if request.endpoint == 'doctor_dashboard' %}active{% endif %}">
+                <i class="bi bi-speedometer2 me-2"></i> Dashboard
+            </a>
+            <hr class="text-white opacity-25">
+            <a href="{{ url_for('index') }}" class="nav-link">
+                <i class="bi bi-globe me-2"></i> Main Site
+            </a>
+            <a href="{{ url_for('doctor_logout') }}" class="nav-link text-danger">
+                <i class="bi bi-box-arrow-left me-2"></i> Logout
+            </a>
+        </nav>
+    </div>
+
+    <div class="main-content">
+        <div class="topbar">
+            <h5 class="mb-0">
+                <i class="bi bi-person-heart me-2 text-primary"></i>
+                {% block page_title %}Doctor Dashboard{% endblock %}
+            </h5>
+            <div class="d-flex align-items-center gap-3">
+                <div class="text-end">
+                    <div class="fw-semibold small text-primary">
+                        {{ session.get('doctor_name', 'Doctor') }}
+                    </div>
+                    <div class="text-muted" style="font-size:0.75rem">
+                        Specialist
+                    </div>
+                </div>
+                <div class="rounded-circle d-flex align-items-center justify-content-center text-white fw-bold" 
+                     style="width:40px;height:40px; background: var(--primary);">
+                    {{ session.get('doctor_name', 'D')[0] }}
+                </div>
+            </div>
+        </div>
+
+        <div class="p-4">
+            {% block content %}{% endblock %}
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    {% block scripts %}{% endblock %}
+</body>
+</html>

@@ -1,0 +1,191 @@
+{% extends 'base_user.html' if session.get('user_id') else 'base.html' %}
+{% block page_title %}Booking Status{% endblock %}
+{% block title %}Pending Confirmation — Diabetes Detection System{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-6 text-center">
+
+            <!-- Status Icon -->
+            <div class="mb-4">
+                {% if appointment.status == 'Confirmed' %}
+                    <i class="bi bi-calendar2-check-fill text-success confirmation-icon"></i>
+                {% elif appointment.status == 'Cancelled' %}
+                    <i class="bi bi-calendar2-x-fill text-danger confirmation-icon"></i>
+                {% elif appointment.status == 'Completed' %}
+                    <i class="bi bi-patch-check-fill text-primary confirmation-icon"></i>
+                {% else %}
+                    <i class="bi bi-hourglass-split text-warning confirmation-icon"></i>
+                {% endif %}
+            </div>
+
+            {% if appointment.status == 'Confirmed' %}
+            <h2 class="fw-bold mb-2 text-success">Appointment Confirmed!</h2>
+            <p class="text-muted mb-4">
+                Your appointment has been confirmed. Please attend at the scheduled date and time.
+            </p>
+            {% elif appointment.status == 'Cancelled' %}
+            <h2 class="fw-bold mb-2 text-danger">Appointment Cancelled</h2>
+            <p class="text-muted mb-4">
+                Unfortunately, your appointment has been cancelled. Please check the reason below or book a new one.
+            </p>
+            {% elif appointment.status == 'Completed' %}
+            <h2 class="fw-bold mb-2 text-primary">Appointment Completed</h2>
+            <p class="text-muted mb-4">
+                Your appointment has been completed. Thank you for visiting DiabetesCare.
+            </p>
+            {% else %}
+            <h2 class="fw-bold mb-2">Appointment Pending!</h2>
+            <p class="text-muted mb-4">
+                Your appointment request has been successfully
+                received and is pending confirmation.
+            </p>
+            {% endif %}
+
+            <!-- Appointment Summary -->
+            <div class="card text-start mb-4">
+                <div class="card-header bg-primary text-white">
+                    <i class="bi bi-calendar-check-fill me-2"></i>
+                    Appointment Details
+                </div>
+                <div class="card-body">
+                    <table class="table table-sm
+                                  table-borderless mb-0">
+                        <tr>
+                            <td class="fw-semibold" width="40%">
+                                <i class="bi bi-person-fill
+                                          text-primary me-1"></i>
+                                Patient
+                            </td>
+                            <td>
+                                {{ appointment.patient.full_name }}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="fw-semibold">
+                                <i class="bi bi-person-badge-fill
+                                          text-primary me-1"></i>
+                                Doctor
+                            </td>
+                            <td>
+                                {{ appointment.doctor.full_name }}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="fw-semibold">
+                                <i class="bi bi-award-fill
+                                          text-primary me-1"></i>
+                                Specialization
+                            </td>
+                            <td>
+                                {{ appointment.doctor.specialization }}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="fw-semibold">
+                                <i class="bi bi-hospital-fill
+                                          text-primary me-1"></i>
+                                Hospital
+                            </td>
+                            <td>
+                                {{ appointment.doctor.hospital }}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="fw-semibold">
+                                <i class="bi bi-telephone-fill
+                                          text-success me-1"></i>
+                                Contact
+                            </td>
+                            <td>
+                                {{ appointment.doctor.phone }}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="fw-semibold">
+                                <i class="bi bi-calendar3
+                                          text-primary me-1"></i>
+                                Date
+                            </td>
+                            <td>
+                                {{ appointment.appointment_date }}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="fw-semibold">
+                                <i class="bi bi-clock-fill
+                                          text-primary me-1"></i>
+                                Time
+                            </td>
+                            <td>
+                                {{ appointment.appointment_time }}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="fw-semibold">
+                                <i class="bi bi-patch-check-fill
+                                          text-success me-1"></i>
+                                Status
+                            </td>
+                            <td>
+                                <span class="badge
+                                    {% if appointment.status == 'Confirmed' %}bg-primary
+                                    {% elif appointment.status == 'Pending' %}bg-warning text-dark
+                                    {% elif appointment.status == 'Completed' %}bg-success
+                                    {% elif appointment.status == 'Cancelled' %}bg-danger
+                                    {% else %}bg-secondary{% endif %}">
+                                    <i class="bi bi-info-circle-fill me-1"></i>
+                                    {{ appointment.status }}
+                                </span>
+                            </td>
+                        </tr>
+                        {% if appointment.admin_notes %}
+                        <tr>
+                            <td class="fw-semibold">
+                                {% if appointment.status == 'Confirmed' %}
+                                    <i class="bi bi-check-circle-fill text-success me-1"></i> Confirmation Note
+                                {% elif appointment.status == 'Cancelled' %}
+                                    <i class="bi bi-x-circle-fill text-danger me-1"></i> Cancellation Reason
+                                {% elif appointment.status == 'Completed' %}
+                                    <i class="bi bi-patch-check-fill text-primary me-1"></i> Clinic Note
+                                {% else %}
+                                    <i class="bi bi-hourglass-split text-secondary me-1"></i> Pending Note
+                                {% endif %}
+                            </td>
+                            <td>
+                                <span class="
+                                    {% if appointment.status == 'Confirmed' %}text-success
+                                    {% elif appointment.status == 'Cancelled' %}text-danger
+                                    {% elif appointment.status == 'Completed' %}text-primary
+                                    {% else %}text-secondary{% endif %}">
+                                    {{ appointment.admin_notes }}
+                                </span>
+                            </td>
+                        </tr>
+                        {% endif %}
+                    </table>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="d-grid gap-3">
+                <a href="{{ url_for('generate_report', patient_id=appointment.patient_id) }}"
+                    class="btn btn-primary btn-lg">
+                    <i class="bi bi-file-medical-fill me-2"></i>
+                    Download Full Medical Report
+                </a>
+                <a href="{{ url_for('my_appointments') }}" class="btn btn-outline-primary">
+                    <i class="bi bi-calendar-check-fill me-2"></i>
+                    Go to My Appointments
+                </a>
+                <a href="{{ url_for('index') }}" class="btn btn-outline-secondary">
+                    <i class="bi bi-house-fill me-2"></i>
+                    Back to Home
+                </a>
+            </div>
+
+        </div>
+    </div>
+</div>
+{% endblock %}

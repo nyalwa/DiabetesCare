@@ -1,0 +1,199 @@
+{% extends 'base.html' %}
+{% block title %}Register — Diabetes Detection System{% endblock %}
+
+{% block content %}
+
+<!-- Full-page dark background matching login/insights/calculator -->
+<div class="inner-page-bg">
+
+    <!-- Page Header -->
+    <div class="section-header-bar">
+        <div class="container">
+            <div class="d-flex align-items-center gap-3">
+                <div class="section-header-icon">
+                    <i class="bi bi-person-plus-fill"></i>
+                </div>
+                <div>
+                    <h1 class="section-header-title">Create Your Account</h1>
+                    <p class="section-header-sub">Join the Diabetes Detection System and take control of your health</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-6">
+
+                <div class="card inner-card">
+                    <div class="card-header bg-primary text-white">
+                        <i class="bi bi-shield-check-fill me-2"></i>
+                        Secure Registration
+                    </div>
+                    <div class="card-body p-4">
+
+                        {% if error %}
+                        <div class="alert alert-danger">
+                            <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                            {{ error }}
+                        </div>
+                        {% endif %}
+
+                        <form method="POST">
+
+                            <!-- Full Name -->
+                            <div class="mb-3">
+                                <label class="form-label">
+                                    <i class="bi bi-person-fill me-1"></i>
+                                    Full Name *
+                                </label>
+                                <input type="text" name="full_name" class="form-control"
+                                    placeholder="e.g. Jane Doe" required autofocus>
+                            </div>
+
+                            <!-- Email -->
+                            <div class="mb-3">
+                                <label class="form-label">
+                                    <i class="bi bi-envelope-fill me-1"></i>
+                                    Email Address *
+                                </label>
+                                <input type="email" name="email" class="form-control"
+                                    placeholder="e.g. jane@email.com" required>
+                            </div>
+
+                            <!-- Phone -->
+                            <div class="mb-3">
+                                <label class="form-label">
+                                    <i class="bi bi-telephone-fill me-1"></i>
+                                    Phone Number *
+                                </label>
+                                <input type="tel" name="phone" class="form-control"
+                                    placeholder="e.g. +256700000000" required>
+                            </div>
+
+                            <!-- Password -->
+                            <div class="mb-3">
+                                <label class="form-label">
+                                    <i class="bi bi-lock-fill me-1"></i>
+                                    Password *
+                                </label>
+                                <div class="input-group">
+                                    <input type="password" name="password" id="password" class="form-control"
+                                        placeholder="Minimum 6 characters" minlength="6" required>
+                                    <button class="btn btn-outline-secondary" type="button"
+                                        onclick="togglePassword('password', this)">
+                                        <i class="bi bi-eye-fill"></i>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Confirm Password -->
+                            <div class="mb-4">
+                                <label class="form-label">
+                                    <i class="bi bi-lock-fill me-1"></i>
+                                    Confirm Password *
+                                </label>
+                                <div class="input-group">
+                                    <input type="password" name="confirm_password" id="confirm_password"
+                                        class="form-control" placeholder="Repeat your password" required>
+                                    <button class="btn btn-outline-secondary" type="button"
+                                        onclick="togglePassword('confirm_password', this)">
+                                        <i class="bi bi-eye-fill"></i>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Terms -->
+                            <div class="mb-4">
+                                <div class="form-check">
+                                    <input type="checkbox" class="form-check-input" id="terms" required>
+                                    <label class="form-check-label small" for="terms">
+                                        I understand this system is for informational purposes only
+                                        and does not replace professional medical advice.
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="d-grid">
+                                <button type="submit" class="btn btn-success btn-lg fw-bold">
+                                    <i class="bi bi-check-circle-fill me-2"></i>
+                                    Create My Account
+                                </button>
+                            </div>
+
+                        </form>
+
+                        <!-- Login Link -->
+                        <div class="text-center mt-4 pt-3 border-top" style="border-color: rgba(255,255,255,0.15) !important;">
+                            <p class="mb-0">
+                                Already have an account?
+                                <a href="{{ url_for('login') }}" class="fw-semibold" style="color: #2ecc71;">
+                                    <i class="bi bi-box-arrow-in-right me-1"></i>
+                                    Sign In here
+                                </a>
+                            </p>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- Security Note -->
+                <div class="text-center mt-3">
+                    <small style="color: rgba(255,255,255,0.5);">
+                        <i class="bi bi-shield-lock-fill text-success me-1"></i>
+                        Your data is encrypted and secure. We never share your information.
+                    </small>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+</div><!-- /inner-page-bg -->
+
+{% endblock %}
+
+
+{% block scripts %}
+<script>
+    // Show/Hide password toggle
+    function togglePassword(fieldId, button) {
+        const field = document.getElementById(fieldId);
+        const icon = button.querySelector('i');
+
+        if (field.type === 'password') {
+            field.type = 'text';
+            icon.className = 'bi bi-eye-slash-fill';
+        } else {
+            field.type = 'password';
+            icon.className = 'bi bi-eye-fill';
+        }
+    }
+
+    // Password match validation
+    const password = document.querySelector('input[name="password"]');
+    const confirm = document.querySelector('input[name="confirm_password"]');
+
+    confirm.addEventListener('input', function () {
+        if (this.value !== password.value) {
+            this.setCustomValidity('Passwords do not match!');
+            this.style.borderColor = '#e74c3c';
+        } else {
+            this.setCustomValidity('');
+            this.style.borderColor = '#27ae60';
+        }
+    });
+
+    // Show password strength
+    password.addEventListener('input', function () {
+        const strength = this.value.length;
+        if (strength < 6) {
+            this.style.borderColor = '#e74c3c';
+        } else if (strength < 10) {
+            this.style.borderColor = '#f39c12';
+        } else {
+            this.style.borderColor = '#27ae60';
+        }
+    });
+</script>
+{% endblock %}

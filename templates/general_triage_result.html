@@ -1,0 +1,42 @@
+{% extends 'base_user.html' %}
+{% block title %}Assessment Result — Diabetes Detection System{% endblock %}
+{% block page_title %}Assessment Result{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-6 text-center">
+        
+        <div class="mb-4">
+            <i class="bi bi-check-circle-fill text-success" style="font-size: 5rem;"></i>
+        </div>
+        
+        <h2 class="fw-bold mb-3">Profile Saved!</h2>
+        <p class="text-muted lead mb-4">Your general vitals and symptoms feel secure. Your Body Mass Index (BMI) is <strong>{{ gt.bmi }}</strong>.</p>
+        
+        <div class="card border-0 shadow-sm text-start mb-5">
+            <div class="card-body p-4 bg-light rounded">
+                <h6 class="fw-bold text-primary mb-3"><i class="bi bi-clipboard-pulse me-2"></i> Recorded Symptoms:</h6>
+                <p class="mb-0 text-dark fst-italic">"{{ gt.symptoms or 'No specific symptoms reported.' }}"</p>
+            </div>
+        </div>
+
+        <div class="p-4 rounded" style="background: rgba(26, 60, 94, 0.05); border: 1px dashed #1a3c5e;">
+            <h5 class="fw-bold mb-3">Would you like to test for Diabetes Risk?</h5>
+            <p class="text-muted small mb-4">
+                If you are experiencing symptoms like extreme fatigue or headaches, our AI tool can analyze your clinical data instantly.
+                Your standard vitals have already been pre-filled for you.
+            </p>
+            
+            <div class="d-grid gap-3 d-md-block">
+                <a href="{{ url_for('triage') }}" class="btn btn-primary btn-lg px-4 fw-bold">
+                    <i class="bi bi-robot me-2"></i> Take Diabetes ML Test
+                </a>
+                <a href="{{ url_for('dashboard') }}" class="btn btn-outline-secondary btn-lg px-4">
+                    Not right now
+                </a>
+            </div>
+        </div>
+        
+    </div>
+</div>
+{% endblock %}

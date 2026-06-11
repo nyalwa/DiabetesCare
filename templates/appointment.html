@@ -1,0 +1,156 @@
+{% extends 'base_user.html' if session.get('user_id') else 'base.html' %}
+{% block page_title %}Book Appointment{% endblock %}
+{% block title %}Book Appointment — Diabetes Detection System{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-7">
+
+            <!-- Header -->
+            <div class="text-center mb-4">
+                <i class="bi bi-calendar-plus-fill
+                          text-primary" style="font-size:3rem"></i>
+                <h2 class="fw-bold mt-2">
+                    Book Appointment
+                </h2>
+                <p class="text-muted">
+                    Schedule your consultation with
+                    your recommended specialist
+                </p>
+            </div>
+
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <i class="bi bi-calendar-check-fill me-2"></i>
+                    Appointment Booking
+                </div>
+                <div class="card-body p-4">
+
+                    <!-- Doctor Summary -->
+                    <div class="card bg-light mb-4">
+                        <div class="card-body p-3">
+                            <div class="d-flex align-items-center">
+                                <div class="doctor-avatar me-3">
+                                    {{ doctor.full_name.split()[0][0] }}{{ doctor.full_name.split()[-1][0] }}
+                                </div>
+                                <div>
+                                    <h5 class="fw-bold mb-1">
+                                        {{ doctor.full_name }}
+                                    </h5>
+                                    <span class="badge bg-primary mb-1">
+                                        <i class="bi bi-award-fill me-1"></i>
+                                        {{ doctor.specialization }}
+                                    </span>
+                                    <p class="text-muted small mb-1">
+                                        <i class="bi bi-hospital-fill
+                                                  text-primary me-1"></i>
+                                        {{ doctor.hospital }}
+                                    </p>
+                                    <p class="text-muted small mb-0">
+                                        <i class="bi bi-telephone-fill
+                                                  text-success me-1"></i>
+                                        {{ doctor.phone }}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Patient Info -->
+                    <div class="alert alert-info mb-4">
+                        <i class="bi bi-person-check-fill me-2"></i>
+                        Booking for:
+                        <strong>{{ patient.full_name }}</strong>
+                        —
+                        <span class="badge
+                            {% if patient.risk_level == 'High Risk' %}bg-danger
+                            {% elif patient.risk_level == 'Medium Risk' %}bg-warning
+                            {% else %}bg-success{% endif %}">
+                            {{ patient.risk_level }}
+                        </span>
+                    </div>
+
+                    <!-- Booking Form -->
+                    <form method="POST">
+                        <div class="row g-3">
+
+                            <!-- Date -->
+                            <div class="col-md-6">
+                                <label class="form-label">
+                                    <i class="bi bi-calendar3
+                                              text-primary me-1"></i>
+                                    Preferred Date *
+                                </label>
+                                <input type="date" name="date" class="form-control" required>
+                            </div>
+
+                            <!-- Time -->
+                            <div class="col-md-6">
+                                <label class="form-label">
+                                    <i class="bi bi-clock-fill
+                                              text-primary me-1"></i>
+                                    Preferred Time *
+                                </label>
+                                <select name="time" class="form-select" required>
+                                    <option value="">
+                                        Select time slot
+                                    </option>
+                                    <option>08:00 AM</option>
+                                    <option>09:00 AM</option>
+                                    <option>10:00 AM</option>
+                                    <option>11:00 AM</option>
+                                    <option>12:00 PM</option>
+                                    <option>02:00 PM</option>
+                                    <option>03:00 PM</option>
+                                    <option>04:00 PM</option>
+                                    <option>05:00 PM</option>
+                                </select>
+                            </div>
+
+                            <!-- Notes -->
+                            <div class="col-12">
+                                <label class="form-label">
+                                    <i class="bi bi-chat-text-fill
+                                              text-primary me-1"></i>
+                                    Additional Notes
+                                </label>
+                                <textarea name="notes" class="form-control" rows="3"
+                                    placeholder="Any symptoms, concerns or questions for the doctor..."></textarea>
+                            </div>
+
+                        </div>
+
+                        <div class="d-grid mt-4">
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="bi bi-check-circle-fill me-2"></i>
+                                Confirm Appointment
+                            </button>
+                        </div>
+
+                        <p class="text-center text-muted
+                                  small mt-3">
+                            <i class="bi bi-info-circle-fill me-1"></i>
+                            You will receive confirmation
+                            on the next page
+                        </p>
+
+                    </form>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Set minimum date to today
+    const dateInput = document.querySelector(
+        'input[name="date"]'
+    );
+    const today = new Date().toISOString().split('T')[0];
+    dateInput.setAttribute('min', today);
+</script>
+{% endblock %}

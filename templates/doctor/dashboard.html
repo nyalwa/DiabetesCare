@@ -1,0 +1,98 @@
+{% extends 'doctor/base_doctor.html' %}
+{% block title %}Doctor Dashboard — Diabetes Detection System{% endblock %}
+{% block page_title %}Clinical Dashboard{% endblock %}
+
+{% block content %}
+<div class="row g-4">
+    <!-- Welcome Header -->
+    <div class="col-12">
+        <div class="card border-0 shadow-sm overflow-hidden" style="border-radius: 15px;">
+            <div class="card-body p-0">
+                <div class="p-4 d-flex align-items-center justify-content-between" style="background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: white;">
+                    <div>
+                        <h3 class="fw-bold mb-1">Welcome, {{ doctor.full_name }}</h3>
+                        <p class="mb-0 opacity-75">{{ doctor.specialization }} | {{ doctor.hospital }}</p>
+                    </div>
+                    <div class="text-end">
+                        <h2 class="fw-bold mb-0">{{ appointments|length }}</h2>
+                        <p class="mb-0 small">Confirmed Appointments</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Appointments Table -->
+    <div class="col-12">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-white py-3">
+                <h5 class="mb-0 fw-bold">
+                    <i class="bi bi-calendar-event text-primary me-2"></i>
+                    Confirmed Appointments & Assessment Data
+                </h5>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="bg-light">
+                            <tr>
+                                <th class="px-4">Patient Name</th>
+                                <th>Schedule</th>
+                                <th>Risk Level</th>
+                                <th>Clinical Data (Test Results)</th>
+                                <th>Status</th>
+                                <th class="text-end px-4">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for appt in appointments %}
+                            {% set patient = patient_map[appt.patient_id] %}
+                            <tr>
+                                <td class="px-4">
+                                    <div class="fw-bold">{{ patient.full_name }}</div>
+                                    <div class="text-muted small">ID: #P-{{ patient.id }}</div>
+                                </td>
+                                <td>
+                                    <div>{{ appt.appointment_date }}</div>
+                                    <div class="text-muted small">{{ appt.appointment_time }}</div>
+                                </td>
+                                <td>
+                                    <span class="badge {% if patient.risk_level == 'High Risk' %}bg-danger{% elif patient.risk_level == 'Medium Risk' %}bg-warning text-dark{% else %}bg-success{% endif %}">
+                                        {{ patient.risk_level }}
+                                    </span>
+                                </td>
+                                <td>
+                                    <div class="d-flex flex-wrap gap-2">
+                                        <small class="badge bg-light text-dark border">Glucose: {{ patient.glucose }}</small>
+                                        <small class="badge bg-light text-dark border">BMI: {{ patient.bmi }}</small>
+                                        <small class="badge bg-light text-dark border">BP: {{ patient.blood_pressure }}</small>
+                                        <small class="badge bg-light text-dark border">Insulin: {{ patient.insulin }}</small>
+                                    </div>
+                                </td>
+                                <td>
+                                    <span class="badge rounded-pill {% if appt.status == 'Confirmed' %}bg-info{% elif appt.status == 'Completed' %}bg-success{% else %}bg-secondary{% endif %}">
+                                        {{ appt.status }}
+                                    </span>
+                                </td>
+                                <td class="text-end px-4">
+                                    <a href="{{ url_for('generate_report', patient_id=patient.id) }}" class="btn btn-sm btn-outline-primary">
+                                        <i class="bi bi-file-earmark-pdf"></i> Report
+                                    </a>
+                                </td>
+                            </tr>
+                            {% else %}
+                            <tr>
+                                <td colspan="6" class="text-center py-5 text-muted">
+                                    <i class="bi bi-calendar-x display-4"></i>
+                                    <p class="mt-2">No confirmed appointments assigned to you yet.</p>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

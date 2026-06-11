@@ -1,0 +1,188 @@
+{% extends 'admin/base_admin.html' %}
+{% block title %}Patients{% endblock %}
+{% block page_title %}Patient Directory{% endblock %}
+
+{% block content %}
+
+<div class="card shadow-sm border-0">
+    <div class="card-header bg-white py-3 border-bottom d-flex justify-content-between align-items-center">
+        <h5 class="mb-0 fw-bold">
+            <i class="bi bi-people-fill me-2 text-primary"></i>
+            All Registered Patients
+            <span class="badge bg-soft-primary text-primary ms-2 fs-7 px-2">
+                {{ patients|length }} unique emails
+            </span>
+        </h5>
+    </div>
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="bg-light text-muted small text-uppercase fw-bold">
+                    <tr>
+                        <th class="ps-4">Patient</th>
+                        <th>Latest Risk Level</th>
+                        <th>Recordings</th>
+                        <th>Last Assessment</th>
+                        <th class="text-end pe-4">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for p in patients %}
+                    <tr>
+                        <td class="ps-4 py-3">
+                            <div class="d-flex align-items-center">
+                                <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 42px; height: 42px; font-weight: 600;">
+                                    {{ p.full_name[0]|upper }}
+                                </div>
+                                <div>
+                                    <h6 class="mb-0 fw-bold">{{ p.full_name }}</h6>
+                                    <small class="text-muted">{{ p.email }}</small>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <span class="badge rounded-pill
+                                {% if p.risk_level == 'High Risk' %}bg-danger
+                                {% elif p.risk_level == 'Medium Risk' %}bg-warning text-dark
+                                {% else %}bg-success{% endif %}">
+                                {{ p.risk_level }}
+                            </span>
+                        </td>
+                        <td>
+                            <span class="badge bg-light text-dark border">
+                                <i class="bi bi-clipboard-data text-primary me-1"></i>
+                                {{ p.history|length }}
+                            </span>
+                        </td>
+                        <td>
+                            <div class="small fw-semibold text-dark">{{ p.created_at.strftime('%b %d, %Y') }}</div>
+                            <small class="text-muted">{{ p.created_at.strftime('%H:%M %p') }}</small>
+                        </td>
+                        <td class="text-end pe-4">
+                            <button type="button" class="btn btn-sm btn-outline-primary rounded-pill px-3" data-bs-toggle="modal" data-bs-target="#historyModal{{ loop.index }}">
+                                <i class="bi bi-clock-history me-1"></i> History
+                            </button>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- HISTORY MODALS -->
+{% for p in patients %}
+<div class="modal fade" id="historyModal{{ loop.index }}" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content border-0 shadow-lg">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title">
+                    <i class="bi bi-clock-history me-2"></i>
+                    Assessment History: {{ p.full_name }}
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body p-0">
+                <!-- Clinical Assessments Table -->
+                <div class="p-3 bg-light border-bottom">
+                    <h6 class="fw-bold mb-0" style="color: var(--primary);"><i class="bi bi-robot me-2"></i> Clinical Assessments</h6>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead class="bg-light small fw-bold text-muted">
+                            <tr>
+                                <th class="ps-3">Date</th>
+                                <th>Glucose</th>
+                                <th>Risk Level</th>
+                                <th>Prediction</th>
+                                <th class="text-end pe-3">Report</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for history in p.history %}
+                            <tr>
+                                <td class="ps-3 py-3">
+                                    <div class="fw-bold">{{ history.created_at.strftime('%b %d, %Y') }}</div>
+                                    <small class="text-muted">{{ history.created_at.strftime('%H:%M') }}</small>
+                                </td>
+                                <td>
+                                    <span class="fw-bold">{{ history.glucose }}</span> <small class="text-muted">mg/dL</small>
+                                </td>
+                                <td>
+                                    <span class="badge 
+                                        {% if history.risk_level == 'High Risk' %}bg-danger
+                                        {% elif history.risk_level == 'Medium Risk' %}bg-warning text-dark
+                                        {% else %}bg-success{% endif %}">
+                                        {{ history.risk_level }}
+                                    </span>
+                                </td>
+                                <td>{{ 'Diabetic' if history.prediction == 1 else 'Non-Diabetic' }}</td>
+                                <td class="text-end pe-3">
+                                    <a href="{{ url_for('generate_report', patient_id=history.id) }}" class="btn btn-sm btn-outline-danger">
+                                        <i class="bi bi-file-pdf"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- General Triage History -->
+                {% if p.gt_history %}
+                <div class="p-3 bg-light border-top border-bottom">
+                    <h6 class="fw-bold mb-0" style="color: var(--secondary);"><i class="bi bi-clipboard-pulse me-2"></i> General Triage History</h6>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0" style="font-size: 0.85rem;">
+                        <thead class="bg-light small fw-bold text-muted">
+                            <tr>
+                                <th class="ps-3">Date</th>
+                                <th>BMI / BP</th>
+                                <th>Smoking / Activity</th>
+                                <th>Family Hist.</th>
+                                <th>Symptoms / Meds</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for gt in p.gt_history %}
+                            <tr>
+                                <td class="ps-3 py-3">
+                                    <div class="fw-bold">{{ gt.created_at.strftime('%b %d, %Y') }}</div>
+                                </td>
+                                <td>
+                                    <div><strong>BMI:</strong> {{ gt.bmi }}</div>
+                                    <div><strong>BP:</strong> {{ gt.blood_pressure }}</div>
+                                </td>
+                                <td>
+                                    <div><strong>Smoking:</strong> {{ gt.smoking }}</div>
+                                    <div><strong>Activity:</strong> {{ gt.activity_level }}</div>
+                                </td>
+                                <td>{{ gt.family_history }}</td>
+                                <td>
+                                    <div class="text-truncate" style="max-width: 150px;" title="{{ gt.symptoms }}"><strong>Symp:</strong> {{ gt.symptoms or 'None' }}</div>
+                                    <div class="text-truncate" style="max-width: 150px;" title="{{ gt.medications }}"><strong>Meds:</strong> {{ gt.medications or 'None' }}</div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% endif %}
+            </div>
+
+            <div class="modal-footer bg-light py-2">
+                <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endfor %}
+
+<style>
+    .bg-soft-primary { background-color: rgba(13, 110, 253, 0.1); }
+    .fs-7 { font-size: 0.85rem; }
+</style>
+
+{% endblock %}

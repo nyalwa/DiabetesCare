@@ -1,0 +1,14 @@
+venv/
+venv - Copy/
+__pycache__/
+*.pyc
+*.pyo
+instance/
+.env
+diabetes_system.db
+*.db
+.vscode/
+.idea/
+*.egg-info/
+dist/
+build/

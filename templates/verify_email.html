@@ -1,0 +1,101 @@
+{% extends 'base.html' %}
+{% block title %}Confirm Your Email — Diabetes Detection System{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-5">
+
+            <!-- Header -->
+            <div class="text-center mb-4">
+                <i class="bi bi-envelope-check-fill text-success" style="font-size:3rem"></i>
+                <h2 class="fw-bold mt-2">
+                    Confirm Your Email
+                </h2>
+                <p class="text-muted">
+                    Enter the 6-digit verification code below to
+                    activate your account.
+                </p>
+            </div>
+
+            <div class="card">
+                <div class="card-header bg-success text-white">
+                    <i class="bi bi-shield-check-fill me-2"></i>
+                    Account Verification
+                </div>
+                <div class="card-body p-4">
+
+                    {% if error %}
+                    <div class="alert alert-danger">
+                        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                        {{ error }}
+                    </div>
+                    {% endif %}
+
+                    <div class="alert alert-info">
+                        <i class="bi bi-send-fill me-2"></i>
+                        A 6-digit verification code has been sent to:
+                        <ul class="mb-0 mt-2">
+                            <li>Email: <strong>{{ email }}</strong></li>
+                            {% if phone %}
+                            <li>SMS: <strong>{{ phone }}</strong></li>
+                            {% endif %}
+                        </ul>
+                    </div>
+
+                    <form method="POST">
+                        <div class="mb-4">
+                            <label class="form-label">
+                                <i class="bi bi-123 me-1 text-primary"></i>
+                                Enter the 6-digit code *
+                            </label>
+                            <input type="text"
+                                   name="otp"
+                                   id="otpInput"
+                                   class="form-control form-control-lg text-center"
+                                   placeholder="e.g. 482917"
+                                   maxlength="6"
+                                   pattern="\d{6}"
+                                   inputmode="numeric"
+                                   required autofocus>
+                            <div class="form-text">
+                                Enter the 6-digit code sent to your email or phone via SMS.
+                            </div>
+                        </div>
+
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-success btn-lg">
+                                <i class="bi bi-check-circle-fill me-2"></i>
+                                Verify &amp; Create Account
+                            </button>
+                        </div>
+                    </form>
+
+                    <div class="text-center mt-4 pt-3 border-top">
+                        <a href="{{ url_for('register') }}" class="text-muted small">
+                            <i class="bi bi-arrow-left me-1"></i>
+                            Go back and use a different email
+                        </a>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Auto-submit when 6 digits are entered
+    const otpInput = document.getElementById('otpInput');
+    otpInput.addEventListener('input', function () {
+        // Only allow numeric input
+        this.value = this.value.replace(/\D/g, '');
+        if (this.value.length === 6) {
+            this.closest('form').submit();
+        }
+    });
+</script>
+{% endblock %}

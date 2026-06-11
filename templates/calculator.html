@@ -1,0 +1,494 @@
+{% extends 'base.html' %}
+{% block title %}Risk Calculator — Diabetes Detection System{% endblock %}
+
+{% block content %}
+
+<!-- Full-page wrapper matching system background -->
+<div class="inner-page-bg">
+
+<!-- Page Header -->
+<div class="section-header-bar">
+    <div class="container">
+        <div class="d-flex align-items-center gap-3">
+            <div class="section-header-icon">
+                <i class="bi bi-calculator-fill"></i>
+            </div>
+            <div>
+                <h1 class="section-header-title">Quick Risk Calculator</h1>
+                <p class="section-header-sub">Get an instant diabetes risk estimate &mdash; no registration required</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-7">
+
+
+            <div class="card inner-card">
+                <div class="card-header bg-primary text-white">
+                    <i class="bi bi-activity me-2"></i>
+                    Enter Your Clinical Values
+                </div>
+                <div class="card-body p-4">
+
+                    <div class="row g-3">
+
+                        <div class="col-md-6">
+                            <label class="form-label">
+                                <i class="bi bi-droplet-fill
+                                          me-1 text-danger"></i>
+                                Glucose Level (mg/dL)
+                            </label>
+                            <input type="number" id="glucose" class="form-control calc-input" min="0" max="300"
+                                placeholder="Normal: 70-140" value="120">
+                            <small class="text-muted">
+                                Normal: 70-140 mg/dL
+                            </small>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label">
+                                <i class="bi bi-speedometer2
+                                          me-1 text-primary"></i>
+                                BMI (kg/m²)
+                            </label>
+                            <input type="number" id="bmi" class="form-control calc-input" min="0" max="70" step="0.1"
+                                placeholder="Normal: 18.5-24.9" value="25">
+                            <small class="text-muted">
+                                Normal: 18.5-24.9
+                            </small>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label">
+                                <i class="bi bi-heart-pulse-fill
+                                          me-1 text-danger"></i>
+                                Blood Pressure (mm Hg)
+                            </label>
+                            <input type="number" id="blood_pressure" class="form-control calc-input" min="0" max="200"
+                                placeholder="Normal: 60-80" value="72">
+                            <small class="text-muted">
+                                Normal: 60-80 mm Hg
+                            </small>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label">
+                                <i class="bi bi-person-fill
+                                          me-1 text-primary"></i>
+                                Age (years)
+                            </label>
+                            <input type="number" id="age" class="form-control calc-input" min="1" max="120"
+                                placeholder="Your age" value="30">
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label">
+                                <i class="bi bi-droplet-half
+                                          me-1 text-warning"></i>
+                                Insulin (µU/mL)
+                            </label>
+                            <input type="number" id="insulin" class="form-control calc-input" min="0" max="900"
+                                placeholder="Normal: 16-166" value="80">
+                            <small class="text-muted">
+                                Enter 0 if unknown
+                            </small>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label">
+                                <i class="bi bi-rulers
+                                          me-1 text-muted"></i>
+                                Skin Thickness (mm)
+                            </label>
+                            <input type="number" id="skin_thickness" class="form-control calc-input" min="0" max="100"
+                                placeholder="Normal: 10-40" value="20">
+                            <small class="text-muted">
+                                Enter 0 if unknown
+                            </small>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label">
+                                <i class="bi bi-people-fill
+                                          me-1 text-info"></i>
+                                Pregnancies
+                            </label>
+                            <input type="number" id="pregnancies" class="form-control calc-input" min="0" max="20"
+                                placeholder="Enter 0 if male" value="0">
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label">
+                                <i class="bi bi-diagram-3-fill
+                                          me-1 text-success"></i>
+                                Diabetes Pedigree
+                            </label>
+                            <input type="number" id="dpf" class="form-control calc-input" min="0" max="3" step="0.001"
+                                placeholder="Family history score" value="0.5">
+                            <small class="text-muted">
+                                Enter 0 if unknown
+                            </small>
+                        </div>
+
+                    </div>
+
+                    <!-- Calculate Button -->
+                    <div class="d-grid mt-4">
+                        <button onclick="calculateRisk()" class="btn btn-primary btn-lg">
+                            <i class="bi bi-calculator-fill me-2"></i>
+                            Calculate My Risk
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- ========== RESULT SECTION ========== -->
+            <div id="resultSection" class="card mt-4 d-none inner-card">
+                <div class="card-header bg-success text-white fw-bold">
+                    <i class="bi bi-activity me-2"></i>
+                    Your Risk Estimate
+                </div>
+                <div class="card-body p-4">
+
+                    <!-- Score -->
+                    <div class="text-center mb-4">
+                        <div class="display-4 fw-bold" id="scoreText">0%</div>
+                        <div class="text-muted">
+                            Estimated Risk Score
+                        </div>
+                    </div>
+
+                    <!-- Risk Meter -->
+                    <div class="mb-4">
+                        <div class="risk-meter mb-2">
+                            <div class="risk-pointer" id="riskPointer" style="left:0%"></div>
+                        </div>
+                        <div class="d-flex
+                                    justify-content-between">
+                            <small class="text-success fw-bold">
+                                Low Risk
+                            </small>
+                            <small class="text-warning fw-bold">
+                                Medium Risk
+                            </small>
+                            <small class="text-danger fw-bold">
+                                High Risk
+                            </small>
+                        </div>
+                    </div>
+
+                    <!-- Risk Badge -->
+                    <div class="text-center mb-4">
+                        <span id="riskBadge" class="badge risk-badge bg-success">
+                            Low Risk
+                        </span>
+                    </div>
+
+                    <!-- Risk Message -->
+                    <div id="riskMessage" class="alert alert-success mb-4">
+                        <i class="bi bi-info-circle-fill me-2"></i>
+                        <span id="riskMessageText"></span>
+                    </div>
+
+                    <!-- Quick Tips -->
+                    <h6 class="fw-bold mb-3">
+                        <i class="bi bi-lightbulb-fill
+                                  text-warning me-2"></i>
+                        Personalized Tips
+                    </h6>
+                    <div id="quickTips"></div>
+
+                    <!-- CTA -->
+                    <div class="text-center mt-4 pt-3
+                                border-top">
+                        <p class="text-muted mb-3">
+                            Want a full assessment with
+                            doctor recommendations and
+                            PDF report?
+                        </p>
+                        {% if session.get('user_id') %}
+                        <a href="{{ url_for('triage') }}" class="btn btn-primary btn-lg">
+                            <i class="bi bi-clipboard2-pulse-fill me-2"></i>
+                            Start Full Triage
+                        </a>
+                        {% else %}
+                        <a href="{{ url_for('register') }}" class="btn btn-primary me-2">
+                            <i class="bi bi-person-plus-fill me-2"></i>
+                            Register Free
+                        </a>
+                        <a href="{{ url_for('login') }}" class="btn btn-outline-primary">
+                            <i class="bi bi-box-arrow-in-right me-2"></i>
+                            Login
+                        </a>
+                        {% endif %}
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- Disclaimer -->
+            <div class="alert alert-warning mt-3">
+                <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                <strong>Disclaimer:</strong>
+                This calculator provides an estimate only
+                and is NOT a medical diagnosis.
+                Always consult a qualified doctor.
+            </div>
+
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    function calculateRisk() {
+
+        // Get all input values
+        const glucose = parseFloat(
+            document.getElementById('glucose').value
+        ) || 120;
+        const bmi = parseFloat(
+            document.getElementById('bmi').value
+        ) || 25;
+        const bp = parseFloat(
+            document.getElementById('blood_pressure').value
+        ) || 72;
+        const age = parseFloat(
+            document.getElementById('age').value
+        ) || 30;
+        const insulin = parseFloat(
+            document.getElementById('insulin').value
+        ) || 80;
+        const skin = parseFloat(
+            document.getElementById('skin_thickness').value
+        ) || 20;
+        const preg = parseFloat(
+            document.getElementById('pregnancies').value
+        ) || 0;
+        const dpf = parseFloat(
+            document.getElementById('dpf').value
+        ) || 0.5;
+
+        // ============================================================
+        // WEIGHTED RISK SCORING ALGORITHM
+        // Based on clinical thresholds
+        // ============================================================
+        let score = 0;
+
+        // Glucose — most important (35 points)
+        if (glucose >= 200) score += 35;
+        else if (glucose >= 140) score += 25;
+        else if (glucose >= 100) score += 12;
+        else score += 0;
+
+        // BMI (20 points)
+        if (bmi >= 35) score += 20;
+        else if (bmi >= 30) score += 15;
+        else if (bmi >= 25) score += 8;
+        else score += 0;
+
+        // Age (15 points)
+        if (age >= 65) score += 15;
+        else if (age >= 45) score += 10;
+        else if (age >= 35) score += 5;
+        else score += 0;
+
+        // Blood Pressure (10 points)
+        if (bp >= 100) score += 10;
+        else if (bp >= 90) score += 6;
+        else if (bp >= 80) score += 3;
+        else score += 0;
+
+        // Family History / DPF (10 points)
+        if (dpf >= 1.0) score += 10;
+        else if (dpf >= 0.5) score += 6;
+        else score += 2;
+
+        // Insulin (5 points)
+        if (insulin === 0) score += 3;
+        else if (insulin > 200) score += 5;
+        else score += 0;
+
+        // Pregnancies (5 points)
+        if (preg >= 5) score += 5;
+        else if (preg >= 3) score += 3;
+        else score += 0;
+
+        // Cap at 100
+        const percentage = Math.min(Math.round(score), 100);
+
+        // Determine risk level
+        let level, color, alertClass, message;
+
+        if (percentage >= 70) {
+            level = '⚠️ High Risk — Diabetic';
+            color = 'danger';
+            alertClass = 'alert-danger';
+            message = 'Your values show strong indicators ' +
+                'of diabetes. Please consult an ' +
+                'Endocrinologist immediately.';
+        } else if (percentage >= 40) {
+            level = '⚡ Medium Risk — Pre-Diabetic';
+            color = 'warning';
+            alertClass = 'alert-warning';
+            message = 'You are at elevated risk of developing ' +
+                'diabetes. Lifestyle changes and medical ' +
+                'consultation are recommended.';
+        } else {
+            level = '✅ Low Risk — Non-Diabetic';
+            color = 'success';
+            alertClass = 'alert-success';
+            message = 'Your values suggest low diabetes risk. ' +
+                'Keep maintaining your healthy lifestyle ' +
+                'and get regular checkups.';
+        }
+
+        // Generate personalized tips
+        let tips = [];
+
+        if (glucose > 140) {
+            tips.push({
+                icon: '🍬',
+                text: 'Your glucose is high. Reduce sugar ' +
+                    'and refined carbohydrates immediately.'
+            });
+        } else if (glucose > 100) {
+            tips.push({
+                icon: '🍎',
+                text: 'Your glucose is borderline. ' +
+                    'Limit sugary drinks and processed foods.'
+            });
+        } else {
+            tips.push({
+                icon: '✅',
+                text: 'Your glucose is in a healthy range. ' +
+                    'Keep maintaining your current diet.'
+            });
+        }
+
+        if (bmi >= 30) {
+            tips.push({
+                icon: '⚖️',
+                text: 'Your BMI indicates obesity. Losing ' +
+                    'even 5% of body weight significantly ' +
+                    'reduces diabetes risk.'
+            });
+        } else if (bmi >= 25) {
+            tips.push({
+                icon: '🏃',
+                text: 'Your BMI is slightly high. ' +
+                    '30 minutes of daily walking can help.'
+            });
+        }
+
+        if (bp > 90) {
+            tips.push({
+                icon: '❤️',
+                text: 'Your blood pressure is high. ' +
+                    'Reduce salt intake and manage stress.'
+            });
+        }
+
+        if (age >= 45) {
+            tips.push({
+                icon: '📅',
+                text: 'At your age, get a diabetes ' +
+                    'screening every 6 months.'
+            });
+        }
+
+        if (dpf >= 0.5) {
+            tips.push({
+                icon: '👨‍👩‍👧',
+                text: 'Your family history increases risk. ' +
+                    'Regular screening is essential.'
+            });
+        }
+
+        tips.push({
+            icon: '💧',
+            text: 'Stay hydrated. Drink at least ' +
+                '8 glasses of water daily.'
+        });
+
+        tips.push({
+            icon: '😴',
+            text: 'Get 7-8 hours of sleep per night. ' +
+                'Poor sleep is linked to diabetes risk.'
+        });
+
+        // ============================================================
+        // UPDATE THE UI
+        // ============================================================
+
+        // Show result section
+        const resultSection = document.getElementById(
+            'resultSection'
+        );
+        resultSection.classList.remove('d-none');
+
+        // Animate score counting up
+        let currentScore = 0;
+        const interval = setInterval(() => {
+            currentScore += 2;
+            if (currentScore >= percentage) {
+                currentScore = percentage;
+                clearInterval(interval);
+            }
+            document.getElementById('scoreText').textContent =
+                currentScore + '%';
+        }, 20);
+
+        // Update risk pointer on meter
+        setTimeout(() => {
+            document.getElementById('riskPointer').style.left =
+                percentage + '%';
+        }, 100);
+
+        // Update badge
+        const badge = document.getElementById('riskBadge');
+        badge.className = `badge risk-badge bg-${color}`;
+        badge.textContent = level;
+
+        // Update message
+        const msgDiv = document.getElementById('riskMessage');
+        msgDiv.className = `alert ${alertClass}`;
+        document.getElementById('riskMessageText').textContent =
+            message;
+
+        // Update tips
+        const tipsDiv = document.getElementById('quickTips');
+        tipsDiv.innerHTML = tips.map(tip => `
+        <div class="tip-card d-flex align-items-start mb-2">
+            <span class="tip-icon me-2"
+                  style="font-size:1.5rem">${tip.icon}</span>
+            <span class="small">${tip.text}</span>
+        </div>
+    `).join('');
+
+        // Smooth scroll to result
+        resultSection.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+        });
+    }
+
+    // Recalculate automatically when inputs change
+    // Only if result is already showing
+    document.querySelectorAll('.calc-input').forEach(input => {
+        input.addEventListener('change', function () {
+            const resultSection = document.getElementById(
+                'resultSection'
+            );
+            if (!resultSection.classList.contains('d-none')) {
+                calculateRisk();
+            }
+        });
+    });
+</script>
+{% endblock %}

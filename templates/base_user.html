@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}My Account{% endblock %} — Diabetes Detection System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        .patient-sidebar {
+            background-color: #1a237e !important; /* Solid Dark Blue */
+            border-right: none !important;
+            box-shadow: 4px 0 20px rgba(0,0,0,0.15) !important;
+        }
+        .patient-sidebar-profile {
+            padding: 30px 15px 15px;
+            text-align: center;
+        }
+        .patient-sidebar-profile img {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            border: 3px solid rgba(255,255,255,0.2);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+        }
+        .patient-sidebar-name {
+            color: white;
+            font-size: 1.21rem;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            margin-top: 15px;
+        }
+        .patient-sidebar-email {
+            color: var(--accent);
+            font-size: 1rem;
+            font-weight: 500;
+        }
+        .patient-nav-group-header {
+            color: rgba(255,255,255,0.4);
+            font-weight: 700;
+            font-size: 1rem;
+            padding: 15px 20px 8px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+        .patient-nav-group-header i {
+            display: none;
+        }
+        .patient-nav .nav-link {
+            color: rgba(255,255,255,0.72) !important;
+            background-color: transparent !important;
+            padding: 15px 20px !important;
+            border-radius: 0 !important;
+            margin: 2px 0 !important;
+            border-left: 4px solid transparent !important;
+            font-size: 1.21rem !important;
+            font-weight: 600 !important;
+            transition: all 0.2s;
+        }
+        .patient-nav .nav-link i {
+            width: 28px;
+            margin-right: 10px;
+            opacity: 0.9;
+            font-size: 1.28rem;
+        }
+        .patient-nav .nav-link:hover {
+            background-color: rgba(255,255,255,0.1) !important;
+            color: white !important;
+            padding-left: 24px !important;
+        }
+        .patient-nav .nav-link.active {
+            background-color: rgba(255,255,255,0.1) !important;
+            color: white !important;
+            border-left: 4px solid var(--secondary) !important;
+            padding-left: 24px !important;
+        }
+        .patient-btn-danger {
+            background-color: rgba(231, 76, 60, 0.1) !important;
+            color: #e74c3c !important;
+            border: 1px solid rgba(231, 76, 60, 0.2) !important;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 10px 15px !important;
+            border-radius: 8px !important;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+        .patient-btn-danger:hover {
+            background-color: #e74c3c !important;
+            color: white !important;
+        }
+        .patient-btn-voting {
+            background-color: rgba(255,255,255,0.1) !important;
+            color: white !important;
+            padding: 10px !important;
+            font-weight: 600 !important;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border: none;
+            border-radius: 8px !important;
+            transition: all 0.2s;
+        }
+        .patient-btn-voting:hover {
+            background-color: rgba(255,255,255,0.2) !important;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- ========== SIDEBAR ========== -->
+    <div class="sidebar patient-sidebar">
+
+        <!-- Top Profile -->
+        <div class="patient-sidebar-profile">
+            <img src="https://ui-avatars.com/api/?name={{ session.get('user_name', 'Patient') }}&background=f0f0f0&color=333&rounded=true&size=100" alt="Profile View" class="rounded-circle">
+            <div class="patient-sidebar-name">{{ session.get('user_name', 'Patient') | upper }}</div>
+            <div class="patient-sidebar-email">{{ session.get('user_email', 'patient@diabetescare.com') }}</div>
+        </div>
+        
+        <hr class="border-white m-0 opacity-25" style="margin: 10px 20px 5px !important;">
+
+        <!-- Navigation Links -->
+        <nav class="nav flex-column patient-nav pt-3">
+            <a href="{{ url_for('dashboard') }}" class="nav-link {% if request.endpoint == 'dashboard' %}active{% endif %}">
+                <i class="bi bi-newspaper"></i> My Dashboard
+            </a>
+            <a href="{{ url_for('explore') }}" class="nav-link {% if request.endpoint == 'explore' %}active{% endif %}">
+                <i class="bi bi-list-task"></i> Insights & Education
+            </a>
+
+            <a href="{{ url_for('general_triage') }}" class="nav-link {% if request.endpoint == 'general_triage' %}active{% endif %}">
+                <i class="bi bi-check-square"></i> New Assessment
+            </a>
+
+
+            <a href="{{ url_for('my_appointments') }}" class="nav-link {% if request.endpoint == 'my_appointments' %}active{% endif %}">
+                <i class="bi bi-graph-up-arrow"></i> My Appointments
+            </a>
+            <a href="{{ url_for('browse_doctors') }}" class="nav-link {% if request.endpoint == 'browse_doctors' %}active{% endif %}">
+                <i class="bi bi-heart-fill"></i> Find a Doctor
+            </a>
+
+            <a href="{{ url_for('profile') }}" class="nav-link {% if request.endpoint == 'profile' %}active{% endif %}">
+                <i class="bi bi-person-vcard"></i> General Information
+            </a>
+        </nav>
+
+        <!-- Custom Buttons -->
+        <div class="px-3 pb-4 mt-3">
+            <a href="{{ url_for('user_logout') }}" class="btn patient-btn-danger w-100 mb-2">
+                <i class="bi bi-box-arrow-left me-2"></i> SECURE LOGOUT
+            </a>
+            <a href="{{ url_for('index') }}" class="btn patient-btn-voting w-100">
+                <i class="bi bi-globe me-2"></i> MAIN SITE
+            </a>
+        </div>
+
+    </div>
+
+    <!-- ========== MAIN CONTENT ========== -->
+    <div class="main-content">
+
+        <!-- Top Bar -->
+        <div class="topbar">
+            <h5 class="mb-0">
+                <i class="bi bi-grid-fill me-2 text-success"></i>
+                {% block page_title %}Dashboard{% endblock %}
+            </h5>
+        </div>
+
+        <!-- Page Content -->
+        <div class="p-4">
+            {% block content %}{% endblock %}
+        </div>
+
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    {% block scripts %}{% endblock %}
+</body>
+
+</html>

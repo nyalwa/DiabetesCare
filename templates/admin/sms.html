@@ -1,0 +1,305 @@
+{% extends 'admin/base_admin.html' %}
+{% block title %}SMS Centre{% endblock %}
+{% block page_title %}SMS Control Centre{% endblock %}
+
+{% block content %}
+
+<!-- ── Stats Row ─────────────────────────────────────────── -->
+<div class="row g-4 mb-4">
+    <div class="col-md-4">
+        <div class="card border-0 shadow-sm h-100"
+             style="background:linear-gradient(135deg,#1a3c5e,#27ae60);color:#fff;">
+            <div class="card-body d-flex align-items-center gap-3">
+                <i class="bi bi-chat-dots-fill fs-1 opacity-75"></i>
+                <div>
+                    <div class="fs-2 fw-bold">{{ sms_stats.total }}</div>
+                    <div class="small opacity-75">Total SMS Sent</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card border-0 shadow-sm h-100"
+             style="background:linear-gradient(135deg,#27ae60,#1e8449);color:#fff;">
+            <div class="card-body d-flex align-items-center gap-3">
+                <i class="bi bi-check-circle-fill fs-1 opacity-75"></i>
+                <div>
+                    <div class="fs-2 fw-bold">{{ sms_stats.sent }}</div>
+                    <div class="small opacity-75">Delivered</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card border-0 shadow-sm h-100"
+             style="background:linear-gradient(135deg,#c0392b,#922b21);color:#fff;">
+            <div class="card-body d-flex align-items-center gap-3">
+                <i class="bi bi-x-circle-fill fs-1 opacity-75"></i>
+                <div>
+                    <div class="fs-2 fw-bold">{{ sms_stats.failed }}</div>
+                    <div class="small opacity-75">Failed</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ── Flash Message ─────────────────────────────────────── -->
+{% if flash_msg %}
+<div class="alert alert-{{ flash_type }} alert-dismissible fade show d-flex align-items-center gap-2 mb-4"
+     role="alert">
+    {% if flash_type == 'success' %}
+    <i class="bi bi-check-circle-fill"></i>
+    {% elif flash_type == 'danger' %}
+    <i class="bi bi-exclamation-octagon-fill"></i>
+    {% else %}
+    <i class="bi bi-info-circle-fill"></i>
+    {% endif %}
+    <span>{{ flash_msg }}</span>
+    <button type="button" class="btn-close ms-auto" data-bs-dismiss="alert"></button>
+</div>
+{% endif %}
+
+<!-- ── Twilio Status Banner ──────────────────────────────── -->
+<div class="alert alert-info d-flex align-items-center gap-2 mb-4">
+    <i class="bi bi-info-circle-fill"></i>
+    <span>
+        SMS is powered by <strong>Twilio</strong>.
+        Set <code>TWILIO_ACCOUNT_SID</code>, <code>TWILIO_AUTH_TOKEN</code>,
+        and <code>TWILIO_PHONE</code> as environment variables to activate sending.
+        Without credentials, SMS is logged but <em>not</em> transmitted.
+    </span>
+</div>
+
+<div class="row g-4 mb-4">
+
+    <!-- ── Single SMS Form ────────────────────────────────── -->
+    <div class="col-lg-6">
+        <div class="card shadow-sm h-100">
+            <div class="card-header bg-light fw-bold">
+                <i class="bi bi-send-fill me-2 text-primary"></i>
+                Send a Single SMS
+            </div>
+            <div class="card-body">
+                <form method="POST" action="{{ url_for('admin_sms') }}"
+                      id="single-sms-form">
+                    <input type="hidden" name="action" value="single">
+
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold" for="to_phone">
+                            Recipient Phone Number
+                        </label>
+                        <div class="input-group">
+                            <span class="input-group-text">
+                                <i class="bi bi-telephone-fill"></i>
+                            </span>
+                            <input type="text"
+                                   id="to_phone"
+                                   name="to_phone"
+                                   class="form-control"
+                                   placeholder="+256700123456"
+                                   required>
+                        </div>
+                        <div class="form-text">
+                            Use international format, e.g. <code>+256700123456</code>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold" for="message">
+                            Message
+                            <span class="text-muted fw-normal" id="single-char-count">(0 / 160)</span>
+                        </label>
+                        <textarea id="message"
+                                  name="message"
+                                  class="form-control"
+                                  rows="4"
+                                  maxlength="320"
+                                  placeholder="Type your message here..."
+                                  required
+                                  oninput="updateCount('message','single-char-count')"></textarea>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary w-100">
+                        <i class="bi bi-send me-2"></i>Send SMS
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- ── Bulk SMS Form ──────────────────────────────────── -->
+    <div class="col-lg-6">
+        <div class="card shadow-sm h-100">
+            <div class="card-header bg-light fw-bold">
+                <i class="bi bi-broadcast me-2 text-success"></i>
+                Bulk SMS — Broadcast by Risk Group
+            </div>
+            <div class="card-body">
+                <form method="POST" action="{{ url_for('admin_sms') }}"
+                      id="bulk-sms-form">
+                    <input type="hidden" name="action" value="bulk">
+
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold" for="risk_group">
+                            Target Group
+                        </label>
+                        <select id="risk_group" name="risk_group" class="form-select" required>
+                            <option value="All">🌐 All Registered Patients</option>
+                            <option value="Positive">🔴 Positive (Diabetes Detected)</option>
+                            <option value="High Chances">🟡 High Chances</option>
+                            <option value="Low Chances">🟢 Low Chances</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold" for="bulk_message">
+                            Message
+                            <span class="text-muted fw-normal" id="bulk-char-count">(0 / 160)</span>
+                        </label>
+                        <textarea id="bulk_message"
+                                  name="bulk_message"
+                                  class="form-control"
+                                  rows="4"
+                                  maxlength="320"
+                                  placeholder="e.g. Reminder: Please attend your upcoming appointment..."
+                                  required
+                                  oninput="updateCount('bulk_message','bulk-char-count')"></textarea>
+                    </div>
+
+                    <!-- Quick Templates -->
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Quick Templates</label>
+                        <div class="d-flex flex-wrap gap-2">
+                            <button type="button" class="btn btn-sm btn-outline-secondary"
+                                    onclick="fillTemplate('DiabetesCare: Please attend your scheduled appointment. Contact us if you need to reschedule.')">
+                                📅 Appointment Reminder
+                            </button>
+                            <button type="button" class="btn btn-sm btn-outline-secondary"
+                                    onclick="fillTemplate('DiabetesCare Health Tip: Monitor your blood sugar regularly and maintain a balanced diet. Stay healthy!')">
+                                💊 Health Tip
+                            </button>
+                            <button type="button" class="btn btn-sm btn-outline-secondary"
+                                    onclick="fillTemplate('DiabetesCare: Our clinic is open Mon-Sat, 8am-5pm. Call us for any medical inquiries or to book an appointment.')">
+                                🏥 Clinic Info
+                            </button>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-success w-100"
+                            onclick="return confirmBulk()">
+                        <i class="bi bi-broadcast me-2"></i>Send Bulk SMS
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ── SMS Log Table ──────────────────────────────────────── -->
+<div class="card shadow-sm">
+    <div class="card-header bg-light d-flex justify-content-between align-items-center">
+        <span class="fw-bold">
+            <i class="bi bi-clock-history me-2 text-secondary"></i>
+            Recent SMS Log
+            <span class="badge bg-secondary ms-2">Last 100</span>
+        </span>
+        <small class="text-muted">Newest first</small>
+    </div>
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover table-sm mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>#</th>
+                        <th><i class="bi bi-telephone-fill me-1"></i>Recipient</th>
+                        <th>Message Preview</th>
+                        <th>Category</th>
+                        <th>Status</th>
+                        <th><i class="bi bi-clock me-1"></i>Sent At</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for log in logs %}
+                    <tr>
+                        <td class="text-muted small">{{ log.id }}</td>
+                        <td>
+                            <span class="fw-semibold">{{ log.recipient }}</span>
+                        </td>
+                        <td>
+                            <span class="text-truncate d-inline-block"
+                                  style="max-width:300px"
+                                  title="{{ log.message }}">
+                                {{ log.message[:80] }}{% if log.message|length > 80 %}…{% endif %}
+                            </span>
+                        </td>
+                        <td>
+                            <span class="badge
+                                {% if log.category == 'OTP' %}bg-primary
+                                {% elif log.category == 'Appointment' %}bg-info text-dark
+                                {% elif log.category == 'Bulk' %}bg-warning text-dark
+                                {% elif log.category == 'Manual' %}bg-secondary
+                                {% else %}bg-light text-dark{% endif %}">
+                                {{ log.category or 'General' }}
+                            </span>
+                        </td>
+                        <td>
+                            {% if log.status == 'sent' %}
+                            <span class="badge bg-success">
+                                <i class="bi bi-check me-1"></i>Sent
+                            </span>
+                            {% else %}
+                            <span class="badge bg-danger">
+                                <i class="bi bi-x me-1"></i>Failed
+                            </span>
+                            {% endif %}
+                        </td>
+                        <td class="text-muted small">
+                            {{ log.sent_at.strftime('%b %d, %Y %I:%M %p') }}
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="6" class="text-center text-muted py-5">
+                            <i class="bi bi-chat-dots display-4 d-block mb-3 opacity-25"></i>
+                            No SMS messages sent yet.
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+    function updateCount(textareaId, counterId) {
+        const ta  = document.getElementById(textareaId);
+        const el  = document.getElementById(counterId);
+        const len = ta.value.length;
+        el.textContent = `(${len} / 160)`;
+        el.style.color = len > 160 ? '#c0392b' : '#6c757d';
+    }
+
+    function fillTemplate(text) {
+        const ta = document.getElementById('bulk_message');
+        ta.value = text;
+        updateCount('bulk_message', 'bulk-char-count');
+        ta.focus();
+    }
+
+    function confirmBulk() {
+        const group = document.getElementById('risk_group').value;
+        const msg   = document.getElementById('bulk_message').value.trim();
+        if (!msg) return false;
+        return confirm(
+            `⚠️ You are about to send a bulk SMS to the "${group}" group.\n\n` +
+            `Message:\n"${msg.substring(0, 100)}${msg.length > 100 ? '…' : ''}"\n\n` +
+            `Proceed?`
+        );
+    }
+</script>
+{% endblock %}

@@ -1,0 +1,1671 @@
+/* ============================================================
+   style.css — DiabetesCare Professional Theme
+   Dark Blue + Green — Health Focused
+   ============================================================ */
+
+/* ============================================================
+   CSS VARIABLES
+   ============================================================ */
+
+:root {
+    --primary: #1a3c5e;
+    --primary-dark: #0d2137;
+    --secondary: #27ae60;
+    --accent: #2ecc71;
+    --blue: #2980b9;
+    --background: #eef2f7;
+    --text-dark: #2c3e50;
+    --text-muted: #7f8c8d;
+    --white: #ffffff;
+    --shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    --shadow-hover: 0 12px 35px rgba(0, 0, 0, 0.15);
+}
+
+/* ============================================================
+   GLOBAL
+   ============================================================ */
+
+/* Base font size — increase this one value to scale the entire UI.
+   Default browser = 16px. Set to 18px for comfortable projection viewing. */
+html {
+    font-size: 18px;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: var(--text-dark);
+    line-height: 1.7;
+    background-color: var(--background);
+    background-image:
+        radial-gradient(ellipse at top left,
+            rgba(26, 60, 94, 0.08) 0%,
+            transparent 50%),
+        radial-gradient(ellipse at bottom right,
+            rgba(39, 174, 96, 0.08) 0%,
+            transparent 50%);
+    background-attachment: fixed;
+}
+
+
+/* ============================================================
+   SCROLLBAR
+   ============================================================ */
+
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+    background: linear-gradient(var(--primary), var(--secondary));
+    border-radius: 4px;
+}
+
+/* ============================================================
+   NAVBAR
+   ============================================================ */
+
+.navbar {
+    background: linear-gradient(135deg,
+            var(--primary-dark) 0%,
+            var(--primary) 100%) !important;
+    box-shadow: 0 3px 20px rgba(0, 0, 0, 0.3);
+    padding: 15px 0;
+    border-bottom: 3px solid var(--secondary);
+}
+
+.navbar-brand {
+    font-size: 1.6rem;
+    font-weight: 800;
+    color: white !important;
+    letter-spacing: 0.5px;
+}
+
+.navbar-brand .brand-care {
+    color: var(--accent);
+}
+
+.nav-link {
+    color: rgba(255, 255, 255, 0.85) !important;
+    font-weight: 600;
+    font-size: 1rem;
+    padding: 8px 15px !important;
+    border-radius: 6px;
+    transition: all 0.2s;
+    margin: 0 2px;
+}
+
+.nav-link:hover {
+    color: white !important;
+    background: rgba(255, 255, 255, 0.12);
+    transform: translateY(-1px);
+}
+
+
+/* ============================================================
+   HERO SECTION
+   ============================================================ */
+
+.hero-section {
+    background:
+        linear-gradient(135deg,
+            rgba(13, 33, 55, 0.98) 0%,
+            rgba(26, 60, 94, 0.98) 40%,
+            rgba(26, 92, 58, 0.96) 100%);
+    color: white;
+    padding: 100px 0;
+    position: relative;
+    overflow: hidden;
+}
+
+.hero-grid {
+    display: grid;
+    grid-template-columns: 1fr 1.1fr;
+    gap: 50px;
+    align-items: center;
+}
+
+@media (max-width: 991px) {
+    .hero-grid {
+        grid-template-columns: 1fr;
+        text-align: center;
+    }
+    
+    .hero-image-container {
+        display: none;
+    }
+}
+
+.hero-image-container {
+    position: relative;
+    z-index: 1;
+    animation: fadeInRight 1s ease-out;
+}
+
+.hero-image-container img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 24px;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+@keyframes fadeInRight {
+    from { opacity: 0; transform: translateX(30px); }
+    to { opacity: 1; transform: translateX(0); }
+}
+
+/* Animated background circles */
+.hero-section::before {
+    content: '';
+    position: absolute;
+    top: -100px;
+    right: -100px;
+    width: 500px;
+    height: 500px;
+    border-radius: 50%;
+    background: radial-gradient(circle,
+            rgba(39, 174, 96, 0.18) 0%,
+            transparent 70%);
+    animation: float 6s ease-in-out infinite;
+}
+
+.hero-section::after {
+    content: '';
+    position: absolute;
+    bottom: -150px;
+    left: -100px;
+    width: 400px;
+    height: 400px;
+    border-radius: 50%;
+    background: radial-gradient(circle,
+            rgba(41, 128, 185, 0.15) 0%,
+            transparent 70%);
+    animation: float 8s ease-in-out infinite reverse;
+}
+
+@keyframes float {
+
+    0%,
+    100% {
+        transform: translateY(0) scale(1);
+    }
+
+    50% {
+        transform: translateY(-20px) scale(1.05);
+    }
+}
+
+.hero-section h1 {
+    font-size: 3.2rem;
+    font-weight: 800;
+    text-shadow: 0 2px 15px rgba(0, 0, 0, 0.3);
+    position: relative;
+    z-index: 1;
+}
+
+.hero-section .lead {
+    font-size: 1.2rem;
+    opacity: 0.9;
+    max-width: 650px;
+    margin: 0 auto 35px;
+    position: relative;
+    z-index: 1;
+}
+
+.hero-section .btn,
+.hero-section a {
+    position: relative;
+    z-index: 1;
+}
+
+/* ============================================================
+   CARDS
+   ============================================================ */
+
+.card {
+    border: none;
+    border-radius: 14px;
+    box-shadow: var(--shadow);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    background: white;
+    overflow: hidden;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-hover);
+}
+
+.card-header {
+    border-radius: 14px 14px 0 0 !important;
+    font-weight: 700;
+    font-size: 1.05rem;
+    padding: 18px 22px;
+    border-bottom: none;
+}
+
+
+.card-header.bg-primary {
+    background: linear-gradient(135deg,
+            var(--primary),
+            var(--primary-dark)) !important;
+    color: white;
+}
+
+.card-header.bg-success {
+    background: linear-gradient(135deg,
+            var(--secondary),
+            #1e8449) !important;
+    color: white;
+}
+
+.card-header.bg-light {
+    background: #f8fafc !important;
+    color: var(--text-dark) !important;
+    border-bottom: 2px solid #e8ecf0 !important;
+}
+
+/* Glassmorphism Card */
+.glass-card {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 16px;
+    padding: 20px;
+}
+
+.card-hover-scale {
+    transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+}
+
+.card-hover-scale:hover {
+    transform: translateY(-12px);
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
+}
+
+/* Brand Tokens */
+.brand-gradient {
+    background: linear-gradient(135deg, #2ecc71, #3498db);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.brand-bg-gradient {
+    background: linear-gradient(135deg, #2ecc71, #3498db);
+}
+
+/* Centered Hero Layout */
+.hero-centered {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 120px 0 80px;
+}
+
+.hero-centered .display-3 {
+    max-width: 800px;
+}
+
+.hero-centered .lead {
+    max-width: 640px;
+    margin: 0 auto 40px;
+}
+
+.hero-floating-image {
+    max-width: 1000px;
+    margin-top: 60px;
+    position: relative;
+    z-index: 1;
+    animation: float 6s ease-in-out infinite;
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-20px); }
+}
+
+.section-pillar {
+    background: #ffffff;
+    border-radius: 24px;
+    padding: 40px;
+    border: 1px solid #f1f5f9;
+}
+
+/* ============================================================
+   HOW IT WORKS STEPS
+   ============================================================ */
+
+.step-icon {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    background: linear-gradient(135deg,
+            var(--primary),
+            var(--secondary));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.8rem;
+    margin: 0 auto 15px;
+    box-shadow: 0 5px 15px rgba(26, 60, 94, 0.3);
+}
+
+/* ============================================================
+   STAT CARDS
+   ============================================================ */
+
+.stat-card {
+    text-align: center;
+    padding: 35px 20px;
+    border-top: 4px solid var(--secondary) !important;
+    position: relative;
+    overflow: hidden;
+}
+
+.stat-card::before {
+    content: '';
+    position: absolute;
+    bottom: -15px;
+    right: -15px;
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: rgba(39, 174, 96, 0.08);
+}
+
+.stat-number {
+    font-size: 3rem;
+    font-weight: 800;
+    background: linear-gradient(135deg,
+            var(--primary),
+            var(--secondary));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    line-height: 1;
+    margin-bottom: 8px;
+}
+
+.stat-label {
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* ============================================================
+   SECTION TITLE
+   ============================================================ */
+
+.section-title {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--primary);
+    border-left: 5px solid var(--secondary);
+    padding-left: 15px;
+    margin-bottom: 25px;
+}
+
+/* ============================================================
+   BUTTONS
+   ============================================================ */
+
+.btn-primary {
+    background: linear-gradient(135deg,
+            var(--primary),
+            var(--primary-dark));
+    border: none;
+    border-radius: 8px;
+    padding: 10px 28px;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+    transition: all 0.3s;
+    box-shadow: 0 3px 10px rgba(26, 60, 94, 0.3);
+}
+
+.btn-primary:hover {
+    background: linear-gradient(135deg,
+            var(--primary-dark),
+            var(--primary));
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(26, 60, 94, 0.4);
+}
+
+.btn-success {
+    background: linear-gradient(135deg,
+            var(--secondary),
+            #1e8449);
+    border: none;
+    border-radius: 8px;
+    padding: 10px 28px;
+    font-weight: 600;
+    transition: all 0.3s;
+    box-shadow: 0 3px 10px rgba(39, 174, 96, 0.3);
+}
+
+.btn-success:hover {
+    background: linear-gradient(135deg,
+            #1e8449,
+            var(--secondary));
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(39, 174, 96, 0.4);
+}
+
+.btn-outline-primary {
+    color: var(--primary);
+    border: 2px solid var(--primary);
+    border-radius: 8px;
+    font-weight: 600;
+    transition: all 0.3s;
+}
+
+.btn-outline-primary:hover {
+    background: var(--primary);
+    color: white;
+    transform: translateY(-2px);
+}
+
+.btn-light {
+    background: white;
+    color: var(--primary);
+    border: none;
+    border-radius: 8px;
+    font-weight: 700;
+    transition: all 0.3s;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+}
+
+.btn-light:hover {
+    background: #f0f4f8;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
+}
+
+.btn-outline-light {
+    border: 2px solid rgba(255, 255, 255, 0.8);
+    color: white;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: all 0.3s;
+}
+
+.btn-outline-light:hover {
+    background: rgba(255, 255, 255, 0.15);
+    color: white;
+    transform: translateY(-2px);
+}
+
+/* ============================================================
+   FORMS
+   ============================================================ */
+
+.form-control,
+.form-select {
+    border-radius: 8px;
+    border: 1.5px solid #dce3ea;
+    padding: 13px 16px;
+    transition: all 0.25s;
+    font-size: 1rem;
+    background: #fafbfc;
+}
+
+.form-control:focus,
+.form-select:focus {
+    border-color: var(--secondary);
+    box-shadow: 0 0 0 3px rgba(39, 174, 96, 0.15);
+    background: white;
+    outline: none;
+}
+
+.form-label {
+    font-weight: 700;
+    color: var(--text-dark);
+    margin-bottom: 6px;
+    font-size: 0.95rem;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+
+.input-group-text {
+    background: var(--primary);
+    color: white;
+    border: none;
+    border-radius: 8px 0 0 8px;
+    font-size: 1rem;
+}
+
+
+/* ============================================================
+   DOCTOR CARDS
+   ============================================================ */
+
+.doctor-card {
+    border-left: 5px solid var(--secondary) !important;
+    transition: all 0.3s;
+    background: linear-gradient(135deg,
+            white 0%,
+            rgba(39, 174, 96, 0.02) 100%) !important;
+}
+
+.doctor-card:hover {
+    border-left-color: var(--primary) !important;
+    transform: translateX(6px) !important;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1) !important;
+}
+
+.doctor-avatar {
+    width: 65px;
+    height: 65px;
+    border-radius: 50%;
+    background: linear-gradient(135deg,
+            var(--primary),
+            var(--secondary));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.4rem;
+    font-weight: 800;
+    flex-shrink: 0;
+    box-shadow: 0 4px 12px rgba(26, 60, 94, 0.35);
+}
+
+/* ============================================================
+   RISK BADGES
+   ============================================================ */
+
+.risk-badge {
+    font-size: 1.15rem;
+    padding: 10px 28px;
+    border-radius: 50px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.risk-progress {
+    height: 24px;
+    border-radius: 12px;
+    background: #e8ecf0;
+    overflow: hidden;
+    box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.08);
+}
+
+.risk-progress .progress-bar {
+    border-radius: 12px;
+    font-weight: 700;
+    font-size: 0.85rem;
+    line-height: 24px;
+    letter-spacing: 0.3px;
+}
+
+/* ============================================================
+   HEALTH TIPS CARDS
+   ============================================================ */
+
+.tip-card {
+    border-left: 4px solid var(--secondary);
+    background: linear-gradient(135deg,
+            rgba(39, 174, 96, 0.05),
+            white);
+    border-radius: 10px;
+    padding: 15px;
+    margin-bottom: 12px;
+    transition: all 0.2s;
+}
+
+.tip-card:hover {
+    background: linear-gradient(135deg,
+            rgba(39, 174, 96, 0.1),
+            white);
+    transform: translateX(3px);
+}
+
+.tip-icon {
+    font-size: 1.8rem;
+    margin-right: 12px;
+}
+
+/* ============================================================
+   ALERTS
+   ============================================================ */
+
+.alert {
+    border: none;
+    border-radius: 10px;
+    padding: 15px 20px;
+    font-size: 0.95rem;
+}
+
+.alert-info {
+    background: rgba(41, 128, 185, 0.08);
+    color: #1a5276;
+    border-left: 4px solid var(--blue);
+}
+
+.alert-success {
+    background: rgba(39, 174, 96, 0.08);
+    color: #1e8449;
+    border-left: 4px solid var(--secondary);
+}
+
+.alert-warning {
+    background: rgba(230, 126, 34, 0.08);
+    color: #935116;
+    border-left: 4px solid #e67e22;
+}
+
+.alert-danger {
+    background: rgba(192, 57, 43, 0.08);
+    color: #922b21;
+    border-left: 4px solid #c0392b;
+}
+
+/* ============================================================
+   TABLES
+   ============================================================ */
+
+.table thead th {
+    background: linear-gradient(135deg,
+            var(--primary),
+            var(--primary-dark));
+    color: white;
+    font-weight: 700;
+    border: none;
+    padding: 15px 16px;
+    font-size: 0.95rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.table tbody tr {
+    transition: background 0.2s;
+}
+
+.table tbody tr:hover {
+    background: rgba(39, 174, 96, 0.04);
+}
+
+.table tbody td {
+    padding: 14px 16px;
+    vertical-align: middle;
+    border-color: #f0f4f8;
+    font-size: 1rem;
+}
+
+
+/* ============================================================
+   BADGES
+   ============================================================ */
+
+.badge {
+    font-size: 0.85rem;
+    padding: 6px 14px;
+    border-radius: 50px;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+}
+
+
+/* ============================================================
+   CONFIRMATION PAGE
+   ============================================================ */
+
+.confirmation-icon {
+    font-size: 5rem;
+    display: block;
+    animation: bounceIn 0.6s ease-out;
+}
+
+@keyframes bounceIn {
+    0% {
+        transform: scale(0);
+        opacity: 0;
+    }
+
+    60% {
+        transform: scale(1.2);
+        opacity: 1;
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}
+
+/* ============================================================
+   FOOTER
+   ============================================================ */
+
+footer {
+    background: linear-gradient(135deg,
+            var(--primary-dark),
+            var(--primary)) !important;
+    border-top: 3px solid var(--secondary) !important;
+}
+
+/* ============================================================
+   SECTION HEADER BAR
+   Shared page-header component for inner pages (Insights, Calculator, etc.)
+   ============================================================ */
+
+.section-header-bar {
+    background: linear-gradient(135deg,
+        var(--primary-dark) 0%,
+        var(--primary)      60%,
+        #145032             100%);
+    padding: 2rem 2.5rem;
+    border-bottom: 3px solid var(--secondary);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.18);
+    margin-bottom: 0;
+}
+
+.section-header-icon {
+    width: 58px;
+    height: 58px;
+    border-radius: 14px;
+    background: rgba(39, 174, 96, 0.2);
+    border: 1.5px solid rgba(39, 174, 96, 0.35);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.6rem;
+    color: var(--accent);
+    flex-shrink: 0;
+}
+
+.section-header-title {
+    font-size: 1.65rem;
+    font-weight: 800;
+    color: #fff;
+    margin: 0;
+    line-height: 1.2;
+}
+
+.section-header-sub {
+    color: rgba(255, 255, 255, 0.55);
+    font-size: 0.9rem;
+    margin: 0.2rem 0 0;
+}
+
+/* Full-page background for inner content pages — matches the login page */
+.inner-page-bg {
+    min-height: calc(100vh - 80px);
+    background:
+        linear-gradient(135deg,
+            var(--primary-dark) 0%,
+            var(--primary)      45%,
+            #145032             100%);
+    position: relative;
+    overflow: hidden;
+}
+
+/* Same animated blobs as login page */
+.inner-page-bg::before {
+    content: '';
+    position: absolute;
+    top: -180px;
+    right: -180px;
+    width: 550px;
+    height: 550px;
+    border-radius: 50%;
+    background: radial-gradient(circle,
+        rgba(39, 174, 96, 0.18) 0%,
+        transparent 70%);
+    animation: float 7s ease-in-out infinite;
+    pointer-events: none;
+}
+
+.inner-page-bg::after {
+    content: '';
+    position: absolute;
+    bottom: -150px;
+    left: -130px;
+    width: 400px;
+    height: 400px;
+    border-radius: 50%;
+    background: radial-gradient(circle,
+        rgba(41, 128, 185, 0.14) 0%,
+        transparent 70%);
+    animation: float 7s ease-in-out infinite reverse;
+    animation-delay: -3s;
+    pointer-events: none;
+}
+
+/* Glassmorphism cards over the dark background */
+.inner-card {
+    background: rgba(255, 255, 255, 0.07) !important;
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.12) !important;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25) !important;
+}
+
+.inner-card .card-body {
+    background: transparent !important;
+    color: rgba(255, 255, 255, 0.85);
+}
+
+.inner-card .card-body .text-muted {
+    color: rgba(255, 255, 255, 0.5) !important;
+}
+
+/* Stat numbers on dark background */
+.inner-page-bg .stat-number {
+    background: none;
+    -webkit-text-fill-color: #fff;
+    color: #fff;
+}
+
+.inner-page-bg .stat-label {
+    color: rgba(255, 255, 255, 0.6);
+}
+
+/* Card border separators on dark bg */
+.inner-page-bg .border-end {
+    border-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+/* ── All text white inside inner pages ─────────────────────── */
+
+.inner-page-bg p,
+.inner-page-bg h1,
+.inner-page-bg h2,
+.inner-page-bg h3,
+.inner-page-bg h4,
+.inner-page-bg h5,
+.inner-page-bg h6,
+.inner-page-bg label,
+.inner-page-bg .form-label,
+.inner-page-bg small,
+.inner-page-bg .small,
+.inner-page-bg span:not(.badge) {
+    color: #fff !important;
+}
+
+.inner-page-bg .text-muted,
+.inner-page-bg .opacity-75 {
+    color: rgba(255, 255, 255, 0.6) !important;
+}
+
+/* Form inputs on dark background — white boxes */
+.inner-page-bg .form-control,
+.inner-page-bg .form-select {
+    background: #ffffff !important;
+    border: 1.5px solid rgba(255, 255, 255, 0.4) !important;
+    color: #1a3c5e !important;
+}
+
+.inner-page-bg .form-control::placeholder {
+    color: rgba(26, 60, 94, 0.45) !important;
+}
+
+.inner-page-bg .form-control:focus,
+.inner-page-bg .form-select:focus {
+    background: #ffffff !important;
+    border-color: var(--accent) !important;
+    box-shadow: 0 0 0 3px rgba(39, 174, 96, 0.28) !important;
+    color: #1a3c5e !important;
+}
+
+/* Disclaimer and info alerts */
+.inner-page-bg .alert-warning {
+    background: rgba(230, 126, 34, 0.18) !important;
+    border: 1px solid rgba(230, 126, 34, 0.4) !important;
+    border-left: 4px solid #e67e22 !important;
+    color: #ffffff !important;
+}
+
+.inner-page-bg .alert-success {
+    background: rgba(39, 174, 96, 0.15) !important;
+    border: 1px solid rgba(39, 174, 96, 0.35) !important;
+    border-left: 4px solid var(--secondary) !important;
+    color: #d5f5e3 !important;
+}
+
+.inner-page-bg .alert-danger {
+    background: rgba(192, 57, 43, 0.15) !important;
+    border: 1px solid rgba(231, 76, 60, 0.35) !important;
+    border-left: 4px solid #e74c3c !important;
+    color: #fadbd8 !important;
+}
+
+/* Tip cards on dark background */
+.inner-page-bg .tip-card {
+    background: rgba(255, 255, 255, 0.06);
+    border-left: 4px solid var(--secondary);
+}
+
+.inner-page-bg .tip-card span {
+    color: rgba(255, 255, 255, 0.85) !important;
+}
+
+/* Risk meter labels */
+.inner-page-bg .text-success { color: #2ecc71 !important; }
+.inner-page-bg .text-warning { color: #f39c12 !important; }
+.inner-page-bg .text-danger  { color: #e74c3c !important; }
+
+/* Score display */
+.inner-page-bg #scoreText {
+    color: #fff !important;
+}
+
+/* ============================================================
+   LOGIN PAGE (admin/old)
+   ============================================================ */
+
+.login-page {
+    min-height: 100vh;
+    background:
+        linear-gradient(135deg,
+            rgba(13, 33, 55, 0.98) 0%,
+            rgba(26, 60, 94, 0.97) 50%,
+            rgba(20, 80, 50, 0.96) 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.login-page::before {
+    content: '';
+    position: absolute;
+    top: -200px;
+    right: -200px;
+    width: 600px;
+    height: 600px;
+    border-radius: 50%;
+    background: radial-gradient(circle,
+            rgba(39, 174, 96, 0.15) 0%,
+            transparent 70%);
+    animation: float 7s ease-in-out infinite;
+}
+
+.login-card {
+    border: none;
+    border-radius: 20px;
+    box-shadow: 0 30px 70px rgba(0, 0, 0, 0.4);
+    width: 100%;
+    max-width: 430px;
+    overflow: hidden;
+    position: relative;
+    z-index: 1;
+}
+
+.login-header {
+    background: linear-gradient(135deg,
+            var(--primary),
+            var(--primary-dark));
+    color: white;
+    padding: 40px 30px;
+    text-align: center;
+    border-bottom: 3px solid var(--secondary);
+}
+
+.login-header i {
+    font-size: 3.5rem;
+    color: var(--accent);
+    margin-bottom: 12px;
+    display: block;
+}
+
+/* ============================================================
+   ADMIN SIDEBAR
+   ============================================================ */
+
+.sidebar {
+    min-height: 100vh;
+    width: 260px;
+    background: linear-gradient(180deg,
+            var(--primary-dark) 0%,
+            var(--primary) 60%,
+            #1a4a2e 100%);
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 100;
+    box-shadow: 4px 0 20px rgba(0, 0, 0, 0.25);
+}
+
+.sidebar-brand {
+    padding: 25px 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    color: white;
+    font-size: 1.5rem;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+}
+
+
+.sidebar-brand .brand-care {
+    color: var(--accent);
+}
+
+.sidebar-role {
+    padding: 10px 20px 5px;
+    color: rgba(255, 255, 255, 0.4);
+    font-size: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    font-weight: 700;
+}
+
+
+.sidebar .nav-link {
+    color: rgba(255, 255, 255, 0.72);
+    padding: 15px 22px !important;
+    border-radius: 0;
+    transition: all 0.2s;
+    font-size: 1.21rem;
+    border-left: 4px solid transparent;
+    margin: 1px 0;
+}
+
+
+.sidebar .nav-link:hover,
+.sidebar .nav-link.active {
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    border-left: 4px solid var(--secondary);
+    padding-left: 26px !important;
+}
+
+.sidebar .nav-link i {
+    width: 24px;
+    font-size: 1.28rem;
+}
+
+
+.sidebar hr {
+    border-color: rgba(255, 255, 255, 0.1);
+    margin: 8px 20px;
+}
+
+/* ============================================================
+   ADMIN MAIN CONTENT
+   ============================================================ */
+
+.main-content {
+    margin-left: 260px;
+    min-height: 100vh;
+    background: var(--background);
+    background-image:
+        radial-gradient(ellipse at top right,
+            rgba(26, 60, 94, 0.05) 0%,
+            transparent 50%),
+        radial-gradient(ellipse at bottom left,
+            rgba(39, 174, 96, 0.05) 0%,
+            transparent 50%);
+}
+
+.topbar {
+    background: white;
+    padding: 18px 28px;
+    border-bottom: 2px solid #eaeff4;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 99;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+}
+
+.topbar h5 {
+    color: var(--primary);
+    font-weight: 700;
+    font-size: 1.1rem;
+}
+
+
+/* ============================================================
+   ADMIN STAT CARDS
+   ============================================================ */
+
+.admin-stat-card {
+    border: none;
+    border-radius: 14px;
+    padding: 28px;
+    color: white;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+    transition: transform 0.3s;
+}
+
+.admin-stat-card:hover {
+    transform: translateY(-4px);
+}
+
+.admin-stat-card::before {
+    content: '';
+    position: absolute;
+    top: -30px;
+    right: -30px;
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.admin-stat-card::after {
+    content: '';
+    position: absolute;
+    bottom: -20px;
+    left: -20px;
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.admin-stat-number {
+    font-size: 2.5rem;
+    font-weight: 800;
+    line-height: 1;
+    margin-bottom: 6px;
+    position: relative;
+    z-index: 1;
+}
+
+.admin-stat-label {
+    font-size: 0.85rem;
+    opacity: 0.88;
+    font-weight: 500;
+    position: relative;
+    z-index: 1;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.admin-stat-icon {
+    position: absolute;
+    right: 20px;
+    bottom: 15px;
+    font-size: 3rem;
+    opacity: 0.2;
+}
+
+/* ============================================================
+   DASHBOARD WELCOME CARD
+   ============================================================ */
+
+.welcome-card {
+    background: linear-gradient(135deg,
+            var(--primary) 0%,
+            var(--primary-dark) 50%,
+            #1a4a2e 100%);
+    color: white;
+    border-radius: 16px;
+    padding: 40px;
+    position: relative;
+    overflow: hidden;
+}
+
+.welcome-card::before {
+    content: '';
+    position: absolute;
+    top: -50px;
+    right: -50px;
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    background: rgba(39, 174, 96, 0.15);
+}
+
+/* ============================================================
+   CALCULATOR PAGE
+   ============================================================ */
+
+.calculator-card {
+    background: white;
+    border-radius: 16px;
+    box-shadow: var(--shadow);
+    overflow: hidden;
+}
+
+.calculator-header {
+    background: linear-gradient(135deg,
+            var(--primary),
+            var(--secondary));
+    color: white;
+    padding: 30px;
+    text-align: center;
+}
+
+.risk-meter {
+    width: 100%;
+    height: 30px;
+    border-radius: 15px;
+    background: linear-gradient(90deg,
+            #27ae60 0%,
+            #f39c12 50%,
+            #e74c3c 100%);
+    position: relative;
+    box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.risk-pointer {
+    position: absolute;
+    top: -8px;
+    width: 20px;
+    height: 46px;
+    background: var(--primary-dark);
+    border-radius: 4px;
+    transform: translateX(-50%);
+    transition: left 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
+}
+
+/* ============================================================
+   TREND CHART PAGE
+   ============================================================ */
+
+.trend-card {
+    background: white;
+    border-radius: 14px;
+    box-shadow: var(--shadow);
+    padding: 25px;
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+
+@media (max-width: 768px) {
+    .hero-section {
+        padding: 70px 0 50px;
+    }
+
+    .hero-section h1 {
+        font-size: 2.2rem;
+    }
+
+    .stat-number {
+        font-size: 2.2rem;
+    }
+
+    .main-content {
+        margin-left: 0;
+    }
+
+    .sidebar {
+        display: none;
+    }
+
+    .topbar {
+        padding: 15px;
+    }
+}
+
+/* ============================================================
+   UNIFIED LOGIN PAGE
+   ============================================================ */
+
+.unified-login-bg {
+    min-height: calc(100vh - 80px);
+    background:
+        linear-gradient(135deg,
+            var(--primary-dark)  0%,
+            var(--primary)       45%,
+            #145032             100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+    padding: 3rem 1rem;
+}
+
+/* Animated decorative blobs */
+.login-blob {
+    position: absolute;
+    border-radius: 50%;
+    pointer-events: none;
+    animation: float 7s ease-in-out infinite;
+}
+
+.login-blob-1 {
+    width: 550px;
+    height: 550px;
+    top: -180px;
+    right: -180px;
+    background: radial-gradient(circle,
+        rgba(39, 174, 96, 0.18) 0%,
+        transparent 70%);
+}
+
+.login-blob-2 {
+    width: 400px;
+    height: 400px;
+    bottom: -150px;
+    left: -130px;
+    background: radial-gradient(circle,
+        rgba(41, 128, 185, 0.14) 0%,
+        transparent 70%);
+    animation-delay: -3s;
+    animation-direction: reverse;
+}
+
+/* Centre column */
+.unified-login-wrap {
+    width: 100%;
+    max-width: 460px;
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* Brand above card */
+.unified-login-brand {
+    font-size: 1.65rem;
+    font-weight: 800;
+    color: #fff;
+    letter-spacing: 0.4px;
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+}
+
+.unified-login-brand i {
+    color: var(--accent);
+    font-size: 2rem;
+}
+
+.unified-login-brand span {
+    color: var(--accent);
+}
+
+.unified-login-tagline {
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 0.9rem;
+    margin: 0 0 1.5rem;
+}
+
+/* Glass card */
+.unified-login-card {
+    width: 100%;
+    background: rgba(255, 255, 255, 0.065);
+    backdrop-filter: blur(22px);
+    -webkit-backdrop-filter: blur(22px);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 22px;
+    padding: 2.25rem 2.25rem 2rem;
+    box-shadow:
+        0 30px 70px rgba(0, 0, 0, 0.4),
+        inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+/* ── Role Tabs ─────────────────────────────────────── */
+
+.unified-role-tabs {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.55rem;
+    margin-bottom: 1.85rem;
+}
+
+/* Hide native radio */
+.role-radio {
+    display: none;
+}
+
+.role-tab-label {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    padding: 0.85rem 0.4rem;
+    border: 1.5px solid rgba(255, 255, 255, 0.12);
+    border-radius: 14px;
+    background: rgba(255, 255, 255, 0.04);
+    color: rgba(255, 255, 255, 0.5);
+    cursor: pointer;
+    transition: all 0.22s ease;
+    font-size: 0.78rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    user-select: none;
+}
+
+.role-tab-label i {
+    font-size: 1.45rem;
+    transition: color 0.22s;
+}
+
+.role-tab-label:hover {
+    border-color: rgba(255, 255, 255, 0.28);
+    background: rgba(255, 255, 255, 0.09);
+    color: rgba(255, 255, 255, 0.85);
+    transform: translateY(-2px);
+}
+
+/* Checked state via CSS sibling */
+.role-radio:checked + .role-tab-label {
+    border-color: var(--secondary);
+    background: rgba(39, 174, 96, 0.16);
+    color: #fff;
+    box-shadow:
+        0 0 0 3px rgba(39, 174, 96, 0.18),
+        0 4px 14px rgba(39, 174, 96, 0.2);
+}
+
+.role-radio:checked + .role-tab-label i {
+    color: var(--accent);
+}
+
+/* ── Error banner ──────────────────────────────────── */
+
+.unified-login-error {
+    background: rgba(192, 57, 43, 0.14);
+    border: 1px solid rgba(231, 76, 60, 0.35);
+    border-left: 4px solid #e74c3c;
+    color: #f1948a;
+    border-radius: 10px;
+    padding: 0.75rem 1rem;
+    font-size: 0.88rem;
+    margin-bottom: 1.2rem;
+}
+
+/* ── Form fields ───────────────────────────────────── */
+
+.unified-login-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.15rem;
+}
+
+.ulg-field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+}
+
+.ulg-label {
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: rgba(255, 255, 255, 0.65);
+    margin: 0;
+}
+
+.ulg-label-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.ulg-forgot {
+    font-size: 0.8rem;
+    color: var(--accent);
+    text-decoration: none;
+    font-weight: 600;
+    transition: opacity 0.2s;
+}
+
+.ulg-forgot:hover {
+    opacity: 0.75;
+}
+
+/* Input wrapper */
+.ulg-input-wrap {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.ulg-input-icon {
+    position: absolute;
+    left: 0.9rem;
+    color: rgba(255, 255, 255, 0.35);
+    font-size: 0.95rem;
+    pointer-events: none;
+    z-index: 1;
+    transition: color 0.2s;
+}
+
+.ulg-input {
+    width: 100%;
+    background: rgba(255, 255, 255, 0.07) !important;
+    border: 1.5px solid rgba(255, 255, 255, 0.13) !important;
+    border-radius: 11px !important;
+    color: #fff !important;
+    font-size: 0.96rem !important;
+    padding: 0.7rem 0.95rem 0.7rem 2.55rem !important;
+    transition: border-color 0.22s, box-shadow 0.22s, background 0.22s !important;
+    outline: none;
+}
+
+.ulg-input::placeholder {
+    color: rgba(255, 255, 255, 0.28) !important;
+}
+
+.ulg-input:focus {
+    border-color: var(--secondary) !important;
+    background: rgba(255, 255, 255, 0.11) !important;
+    box-shadow: 0 0 0 3px rgba(39, 174, 96, 0.22) !important;
+}
+
+.ulg-input:focus ~ .ulg-input-icon,
+.ulg-input-wrap:focus-within .ulg-input-icon {
+    color: var(--accent);
+}
+
+/* Password has extra padding for eye button */
+.ulg-input-pw {
+    padding-right: 3rem !important;
+}
+
+.ulg-eye-btn {
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    width: 2.75rem;
+    background: transparent;
+    border: none;
+    color: rgba(255, 255, 255, 0.35);
+    cursor: pointer;
+    transition: color 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 0 11px 11px 0;
+}
+
+.ulg-eye-btn:hover {
+    color: rgba(255, 255, 255, 0.75);
+}
+
+/* ── Submit button ─────────────────────────────────── */
+
+.ulg-submit {
+    width: 100%;
+    padding: 0.78rem;
+    border: none;
+    border-radius: 12px;
+    background: linear-gradient(135deg, var(--secondary), #1a7a40);
+    color: #fff;
+    font-size: 1rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    cursor: pointer;
+    box-shadow: 0 5px 20px rgba(39, 174, 96, 0.38);
+    transition: transform 0.18s, box-shadow 0.18s;
+    margin-top: 0.4rem;
+}
+
+.ulg-submit:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 28px rgba(39, 174, 96, 0.48);
+}
+
+.ulg-submit:active {
+    transform: translateY(0);
+}
+
+/* ── Register link ─────────────────────────────────── */
+
+.ulg-register {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.55rem;
+    margin-top: 1.5rem;
+    padding-top: 1.35rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.09);
+}
+
+.ulg-divider-text {
+    font-size: 0.82rem;
+    color: rgba(255, 255, 255, 0.38);
+}
+
+.ulg-register-link {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--accent);
+    text-decoration: none;
+    transition: opacity 0.2s;
+}
+
+.ulg-register-link:hover {
+    opacity: 0.75;
+}
+
+/* ── Responsive ────────────────────────────────────── */
+
+@media (max-width: 480px) {
+    .unified-login-card {
+        padding: 1.75rem 1.25rem 1.5rem;
+    }
+
+    .role-tab-label {
+        padding: 0.7rem 0.3rem;
+        font-size: 0.72rem;
+    }
+
+    .role-tab-label i {
+        font-size: 1.25rem;
+    }
+}

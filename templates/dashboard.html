@@ -1,0 +1,315 @@
+{% extends 'base_user.html' %}
+{% block title %}My Dashboard — Diabetes Detection System{% endblock %}
+{% block page_title %}Patient Dashboard{% endblock %}
+
+{% block content %}
+<style>
+    /* Dashboard Stats Cards */
+    .stat-card-custom {
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        padding: 0;
+        overflow: hidden;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .stat-card-header {
+        height: 8px;
+        width: 100%;
+    }
+
+    .stat-card-body {
+        padding: 20px;
+        flex-grow: 1;
+    }
+
+    .stat-card-footer {
+        padding: 0;
+    }
+
+    .stat-label-custom {
+        font-size: 0.85rem;
+        color: #6c757d;
+        margin-bottom: 5px;
+    }
+
+    .stat-value-custom {
+        font-size: 1.6rem;
+        font-weight: 700;
+        margin-bottom: 2px;
+    }
+
+    .stat-subtext-custom {
+        font-size: 0.8rem;
+        color: #adb5bd;
+        margin-bottom: 15px;
+    }
+
+    .btn-details-custom {
+        width: 100%;
+        border-radius: 0;
+        padding: 8px;
+        font-weight: 600;
+        font-size: 0.9rem;
+        text-align: center;
+        text-decoration: none;
+        display: block;
+        color: white !important;
+    }
+
+    /* History Table */
+    .history-card-custom {
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        margin-top: 30px;
+        overflow: hidden;
+    }
+
+    .history-header-custom {
+        background: var(--primary);
+        color: white;
+        padding: 12px 20px;
+        font-weight: 600;
+        font-size: 1.1rem;
+    }
+
+    .custom-table thead th {
+        background: #f1f4f9;
+        color: #495057;
+        font-weight: 600;
+        font-size: 0.85rem;
+        text-transform: none;
+        letter-spacing: normal;
+        border-bottom: 1px solid #dee2e6;
+    }
+
+    .custom-table td {
+        font-size: 0.9rem;
+        padding: 12px 20px;
+        vertical-align: middle;
+    }
+
+    /* Health Tip Box */
+    .tip-box-custom {
+        background: #f0f9f0;
+        border: 1px solid #d4edda;
+        border-radius: 8px;
+        padding: 20px;
+        margin-top: 30px;
+        display: flex;
+        gap: 15px;
+        align-items: center;
+    }
+
+    .tip-icon-custom {
+        font-size: 1.5rem;
+        color: var(--secondary);
+    }
+
+    .tip-title-custom {
+        font-weight: 700;
+        color: #155724;
+        margin-bottom: 5px;
+        font-size: 1.1rem;
+    }
+
+    .tip-text-custom {
+        font-size: 0.9rem;
+        color: #155724;
+        margin-bottom: 0;
+        line-height: 1.4;
+    }
+
+    /* Action Buttons */
+    .action-row-custom {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 20px;
+        margin-top: 30px;
+    }
+
+    .btn-action-custom {
+        padding: 15px;
+        text-align: center;
+        color: white !important;
+        font-weight: 700;
+        border-radius: 8px;
+        text-decoration: none;
+        font-size: 1.1rem;
+        transition: transform 0.2s;
+    }
+
+    .btn-action-custom:hover {
+        transform: translateY(-2px);
+        opacity: 0.9;
+    }
+
+    .btn-blue { background-color: var(--primary); }
+    .btn-green { background-color: var(--secondary); }
+    .btn-purple { background-color: #8e44ad; } /* Keep purple for reports as it's distinct */
+</style>
+
+{% if is_new %}
+    <!-- Welcome Section for New Users -->
+    <div class="welcome-card text-center mb-5 p-5 bg-white rounded-3 shadow-sm">
+        <div class="mb-3">
+            <i class="bi bi-hand-wave-fill text-warning" style="font-size:4rem"></i>
+        </div>
+        <h2 class="fw-bold mb-2">Welcome, {{ user.full_name.split()[0] }}! 🎉</h2>
+        <p class="lead opacity-90 mb-4">You are new here. Let's start by assessing your diabetes risk.</p>
+        <a href="{{ url_for('general_triage') }}" class="btn btn-success btn-lg px-5 fw-bold">
+            <i class="bi bi-clipboard2-pulse-fill me-2"></i> Start Your First Assessment
+        </a>
+    </div>
+{% else %}
+    {% set latest = past_results[0] %}
+    {% set next_appt = none %}
+    {% for res in past_results if not next_appt %}
+        {% if res.appointment and res.appointment.status in ['Pending', 'Confirmed'] %}
+            {% set next_appt = res.appointment %}
+        {% endif %}
+    {% endfor %}
+
+    <!-- Stat Cards Row -->
+    <div class="row g-4">
+        <!-- Card 1: Last Risk Level -->
+        <div class="col-md-3">
+            <div class="stat-card-custom">
+                <div class="stat-card-header" style="background-color: #e67e22;"></div>
+                <div class="stat-card-body">
+                    <div class="stat-label-custom">Last Risk Level</div>
+                    <div class="stat-value-custom" style="color: #e67e22;">{{ latest.risk_level }}</div>
+                    <div class="stat-subtext-custom">{{ 'Diabetes Detected' if latest.prediction == 1 else 'Healthy Range' }}</div>
+                </div>
+                <div class="stat-card-footer">
+                    <a href="{{ url_for('generate_report', patient_id=latest.id) }}" class="btn-details-custom" style="background-color: #e67e22;">View Details</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 2: Risk Score -->
+        <div class="col-md-3">
+            <div class="stat-card-custom">
+                <div class="stat-card-header" style="background-color: var(--primary);"></div>
+                <div class="stat-card-body">
+                    <div class="stat-label-custom">Risk Score</div>
+                    <div class="stat-value-custom" style="color: var(--primary);">{{ (latest.probability * 100)|round(1) }}%</div>
+                    <div class="stat-subtext-custom">Probability Score</div>
+                </div>
+                <div class="stat-card-footer">
+                    <a href="{{ url_for('generate_report', patient_id=latest.id) }}" class="btn-details-custom" style="background-color: var(--primary);">View Details</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 3: Assessments -->
+        <div class="col-md-3">
+            <div class="stat-card-custom">
+                <div class="stat-card-header" style="background-color: var(--secondary);"></div>
+                <div class="stat-card-body">
+                    <div class="stat-label-custom">Assessments</div>
+                    <div class="stat-value-custom" style="color: var(--secondary);">{{ past_results|length }}</div>
+                    <div class="stat-subtext-custom">Total completed</div>
+                </div>
+                <div class="stat-card-footer">
+                    <a href="#history" class="btn-details-custom" style="background-color: var(--secondary);">View Details</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 4: Next Appointment -->
+        <div class="col-md-3">
+            <div class="stat-card-custom">
+                <div class="stat-card-header" style="background-color: #8e44ad;"></div>
+                <div class="stat-card-body">
+                    <div class="stat-label-custom">Next Appointment</div>
+                    {% if next_appt %}
+                        <div class="stat-value-custom" style="color: #8e44ad;">{{ next_appt.appointment_date }}</div>
+                        <div class="stat-subtext-custom">Dr. {{ next_appt.doctor.full_name.split()[-1] }}, {{ next_appt.doctor.specialization }}</div>
+                    {% else %}
+                        <div class="stat-value-custom text-muted" style="font-size: 1.2rem; padding-top: 10px;">No Upcoming</div>
+                        <div class="stat-subtext-custom">No pending appointments</div>
+                    {% endif %}
+                </div>
+                <div class="stat-card-footer">
+                    <a href="{{ url_for('my_appointments') }}" class="btn-details-custom" style="background-color: #8e44ad;">View Details</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Assessment History Table -->
+    <div class="history-card-custom" id="history">
+        <div class="history-header-custom">Recent Assessment History</div>
+        <div class="table-responsive">
+            <table class="table custom-table mb-0">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Glucose</th>
+                        <th>BMI</th>
+                        <th>Risk Level</th>
+                        <th>Probability</th>
+                        <th class="text-end">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for result in past_results[:5] %}
+                    <tr>
+                        <td>{{ result.created_at.strftime('%d %b %Y') }}</td>
+                        <td>{{ result.glucose }} mg/dL</td>
+                        <td>{{ result.bmi }}</td>
+                        <td>
+                            <span class="fw-bold" style="color: {% if result.risk_level == 'High Risk' %}#e74c3c{% elif result.risk_level == 'Medium Risk' %}#e67e22{% else %}var(--secondary){% endif %};">
+                                {{ result.risk_level }}
+                            </span>
+                        </td>
+                        <td>{{ (result.probability * 100)|round(1) }}%</td>
+                        <td class="text-end">
+                            <a href="{{ url_for('generate_report', patient_id=result.id) }}" class="text-primary text-decoration-none fw-bold">View</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Personalized Health Tip -->
+    {% if latest.risk_level != 'Low Risk' %}
+    <div class="tip-box-custom">
+        <div class="tip-icon-custom"><i class="bi bi-lightbulb-fill"></i></div>
+        <div>
+            <h5 class="tip-title-custom">Personalized Health Tip</h5>
+            <p class="tip-text-custom">
+                Your glucose level of {{ latest.glucose }} mg/dL is above the normal range (70-99 mg/dL). 
+                Consider reducing intake of refined carbohydrates and sugary drinks. 
+                {% if next_appt %}Schedule a follow-up with Dr. {{ next_appt.doctor.full_name.split()[-1] }} within the next 14 days.{% endif %}
+            </p>
+        </div>
+    </div>
+    {% else %}
+    <div class="tip-box-custom">
+        <div class="tip-icon-custom"><i class="bi bi-check-circle-fill"></i></div>
+        <div>
+            <h5 class="tip-title-custom">Keep Up the Good Work!</h5>
+            <p class="tip-text-custom">
+                Your levels are in a healthy range. Maintaining a balanced diet and regular exercise will help keep your diabetes risk low.
+            </p>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Action Buttons Row -->
+    <div class="action-row-custom">
+        <a href="{{ url_for('general_triage') }}" class="btn-action-custom btn-blue">Start New Assessment</a>
+        <a href="{{ url_for('browse_doctors') }}" class="btn-action-custom btn-green">Book Appointment</a>
+        <a href="{{ url_for('generate_report', patient_id=latest.id) }}" class="btn-action-custom btn-purple">Download PDF Report</a>
+    </div>
+
+{% endif %}
+{% endblock %}

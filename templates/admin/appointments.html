@@ -1,0 +1,251 @@
+{% extends 'admin/base_admin.html' %}
+{% block title %}Appointments{% endblock %}
+{% block page_title %}All Appointments{% endblock %}
+
+{% block content %}
+
+<div class="card">
+    <div class="card-header bg-light
+                d-flex justify-content-between
+                align-items-center">
+        <span class="fw-bold">
+            <i class="bi bi-calendar-check-fill
+                      me-2 text-success"></i>
+            All Booked Appointments
+            <span class="badge bg-primary ms-2">
+                {{ appointments|length }}
+            </span>
+        </span>
+    </div>
+    <div class="card-body p-0">
+        <table class="table table-hover mb-0">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>
+                        <i class="bi bi-person-fill me-1"></i>
+                        Patient
+                    </th>
+                    <th>
+                        <i class="bi bi-activity me-1"></i>
+                        Risk Level
+                    </th>
+                    <th>
+                        <i class="bi bi-person-badge-fill me-1"></i>
+                        Doctor
+                    </th>
+                    <th>Specialization</th>
+                    <th>
+                        <i class="bi bi-calendar3 me-1"></i>
+                        Date
+                    </th>
+                    <th>
+                        <i class="bi bi-clock me-1"></i>
+                        Time
+                    </th>
+                    <th>Status</th>
+                    <th>Update</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for appt in appointments %}
+                <tr>
+                    <td>{{ appt.id }}</td>
+                    <td>
+                        <strong>
+                            {{ appt.patient.full_name }}
+                        </strong>
+                        <br>
+                        <small class="text-muted">
+                            <i class="bi bi-telephone-fill me-1"></i>
+                            {{ appt.patient.phone }}
+                        </small>
+                    </td>
+                    <td>
+                        <span class="badge
+                            {% if appt.patient.risk_level == 'High Risk' %}bg-danger
+                            {% elif appt.patient.risk_level == 'Medium Risk' %}bg-warning
+                            {% else %}bg-success{% endif %}">
+                            {% if appt.patient.risk_level == 'High Risk' %}
+                            <i class="bi bi-exclamation-triangle-fill me-1"></i>
+                            {% elif appt.patient.risk_level == 'Medium Risk' %}
+                            <i class="bi bi-exclamation-circle-fill me-1"></i>
+                            {% else %}
+                            <i class="bi bi-check-circle-fill me-1"></i>
+                            {% endif %}
+                            {{ appt.patient.risk_level }}
+                        </span>
+                    </td>
+                    <td>
+                        <strong>{{ appt.doctor.full_name }}</strong>
+                    </td>
+                    <td>
+                        <span class="badge bg-primary">
+                            {{ appt.doctor.specialization }}
+                        </span>
+                    </td>
+                    <td>{{ appt.appointment_date }}</td>
+                    <td>{{ appt.appointment_time }}</td>
+                    <td>
+                        <span class="badge
+                            {% if appt.status == 'Confirmed' %}bg-primary
+                            {% elif appt.status == 'Pending' %}bg-warning text-dark
+                            {% elif appt.status == 'Completed' %}bg-success
+                            {% elif appt.status == 'Cancelled' %}bg-danger
+                            {% else %}bg-secondary{% endif %}">
+                            {{ appt.status }}
+                        </span>
+                    </td>
+                    <td>
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-sm btn-outline-info" data-bs-toggle="modal" data-bs-target="#profileModalAppt{{ appt.id }}">
+                                <i class="bi bi-person-lines-fill"></i> Profile
+                            </button>
+                            <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#updateModal{{ appt.id }}">
+                                <i class="bi bi-pencil-square"></i> Update
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+
+
+                {% else %}
+                <tr>
+                    <td colspan="9" class="text-center text-muted py-5">
+                        <i class="bi bi-calendar-x
+                                  display-4 d-block mb-3"></i>
+                        No appointments booked yet.
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Modals must be outside of tables to prevent focus/clicking bugs -->
+{% for appt in appointments %}
+<!-- CLINICAL PROFILE MODAL (Appt) -->
+<div class="modal fade" id="profileModalAppt{{ appt.id }}" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-info text-white">
+                <h5 class="modal-title">
+                    <i class="bi bi-activity me-2"></i>
+                    Clinical Profile: {{ appt.patient.full_name }}
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row g-4 text-start">
+                    <!-- Assessment Result -->
+                    <div class="col-md-4 text-center border-end">
+                        <div class="mb-3">
+                            {% if appt.patient.risk_level == 'High Risk' %}
+                            <i class="bi bi-exclamation-triangle-fill text-danger fs-1"></i>
+                            {% elif appt.patient.risk_level == 'Medium Risk' %}
+                            <i class="bi bi-exclamation-circle-fill text-warning fs-1"></i>
+                            {% else %}
+                            <i class="bi bi-check-circle-fill text-success fs-1"></i>
+                            {% endif %}
+                        </div>
+                        <h4 class="fw-bold mb-0">{{ (appt.patient.probability * 100)|round(1) }}%</h4>
+                        <div class="badge {% if appt.patient.risk_level == 'High Risk' %}bg-danger{% elif appt.patient.risk_level == 'Medium Risk' %}bg-warning{% else %}bg-success{% endif %} mb-3">
+                            {{ appt.patient.risk_level }}
+                        </div>
+                        <hr>
+                        <p class="small text-muted mb-0">Assessed on</p>
+                        <p class="fw-bold">{{ appt.patient.created_at.strftime('%b %d, %Y') }}</p>
+                    </div>
+                    
+                    <!-- Clinical Markers -->
+                    <div class="col-md-8">
+                        <div class="row g-3">
+                            <div class="col-6">
+                                <small class="text-muted text-uppercase d-block mb-1">Glucose</small>
+                                <span class="fs-5 fw-bold text-dark">{{ appt.patient.glucose }}</span> mg/dL
+                            </div>
+                            <div class="col-6">
+                                <small class="text-muted text-uppercase d-block mb-1">BMI</small>
+                                <span class="fs-5 fw-bold text-dark">{{ appt.patient.bmi }}</span> kg/m²
+                            </div>
+                            <div class="col-6">
+                                <small class="text-muted text-uppercase d-block mb-1">Blood Pressure</small>
+                                <span class="fs-5 fw-bold text-dark">{{ appt.patient.blood_pressure }}</span> mm Hg
+                            </div>
+                            <div class="col-6">
+                                <small class="text-muted text-uppercase d-block mb-1">Insulin</small>
+                                <span class="fs-5 fw-bold text-dark">{{ appt.patient.insulin }}</span> µU/mL
+                            </div>
+                            <div class="col-6">
+                                <small class="text-muted text-uppercase d-block mb-1">Skin Thickness</small>
+                                <span class="fs-5 fw-bold text-dark">{{ appt.patient.skin_thickness }}</span> mm
+                            </div>
+                            <div class="col-6">
+                                <small class="text-muted text-uppercase d-block mb-1">DPF (Pedigree)</small>
+                                <span class="fs-5 fw-bold text-dark">{{ appt.patient.dpf }}</span>
+                            </div>
+                        </div>
+                        
+                        <!-- Patient Notes / Characteristics -->
+                        <div class="mt-4 pt-3 border-top">
+                            <small class="text-muted text-uppercase d-block mb-2">
+                                <i class="bi bi-chat-left-text-fill me-1"></i> Patient Notes & Characteristics
+                            </small>
+                            {% if appt.notes %}
+                            <div class="p-3 bg-light rounded text-dark fst-italic">
+                                "{{ appt.notes }}"
+                            </div>
+                            {% else %}
+                            <p class="text-muted mb-0">No specific notes or characteristics provided.</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <a href="{{ url_for('generate_report', patient_id=appt.patient.id) }}" class="btn btn-primary d-none d-md-inline-block">
+                    <i class="bi bi-file-medical-fill me-1"></i> Report
+                </a>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="updateModal{{ appt.id }}" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form method="POST" action="{{ url_for('update_appointment', appt_id=appt.id) }}">
+                <div class="modal-header">
+                    <h5 class="modal-title">Update Appointment #{{ appt.id }}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body text-start">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Status</label>
+                        <select name="status" class="form-select">
+                            <option {% if appt.status=='Pending' %}selected{% endif %}>Pending</option>
+                            <option {% if appt.status=='Confirmed' %}selected{% endif %}>Confirmed</option>
+                            <option {% if appt.status=='Completed' %}selected{% endif %}>Completed</option>
+                            <option {% if appt.status=='Cancelled' %}selected{% endif %}>Cancelled</option>
+                            <option {% if appt.status=='No Show' %}selected{% endif %}>No Show</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Admin Notes / Cancellation Reason</label>
+                        <textarea name="admin_notes" class="form-control" rows="3" placeholder="If cancelling or changing, provide a reason or recommend another doctor...">{{ appt.admin_notes or '' }}</textarea>
+                        <small class="text-muted">This note will be visible to the patient on their dashboard.</small>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endfor %}
+
+{% endblock %}
