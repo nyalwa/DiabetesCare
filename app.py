@@ -11,7 +11,21 @@ import io
 import os
 from datetime import datetime
 import random
-from flask_mail import Mail, Message
+# Compatibility wrapper for flask-mailman under Python 3.12+
+from flask_mailman import Mail as BaseMail, EmailMessage
+
+class Mail(BaseMail):
+    def send(self, message):
+        message.send()
+
+class Message(EmailMessage):
+    def __init__(self, subject="", body="", sender=None, recipients=None, **kwargs):
+        from_email = sender
+        if isinstance(from_email, tuple) and len(from_email) == 2:
+            from_email = f"{from_email[0]} <{from_email[1]}>"
+        to = recipients
+        super().__init__(subject=subject, body=body, from_email=from_email, to=to, **kwargs)
+
 from functools import wraps
 from reportlab.lib.pagesizes import letter
 from reportlab.lib import colors
