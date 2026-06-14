@@ -25,11 +25,11 @@
                     {% endif %}
                 {% endwith %}
 
-                <form method="POST" action="{{ url_for('profile') }}">
+                <form method="POST" action="{{ url_for('profile') }}" enctype="multipart/form-data">
                     <div class="mb-3">
-                        <label class="form-label fw-bold text-muted">Full Name</label>
-                        <input type="text" class="form-control" value="{{ user.full_name }}" readonly>
-                        <div class="form-text">Name changes must be verified through the clinic.</div>
+                        <label class="form-label fw-bold">Full Name</label>
+                        <input type="text" name="full_name" class="form-control" value="{{ user.full_name }}" required>
+                        <div class="form-text">Update your full name.</div>
                     </div>
                     
                     <div class="mb-3">
@@ -38,13 +38,26 @@
                         <div class="form-text">Email address cannot be changed.</div>
                     </div>
                     
-                    <div class="mb-4">
+                    <div class="mb-3">
                         <label class="form-label fw-bold">Phone Number</label>
                         <input type="tel" name="phone" class="form-control" value="{{ user.phone }}" required>
                     </div>
 
+                    <div class="mb-4">
+                        <label class="form-label fw-bold">Profile Picture</label>
+                        <div class="d-flex align-items-center gap-3">
+                            {% if user.profile_picture %}
+                            <img src="{{ url_for('static', filename='uploads/profile_pics/' + user.profile_picture) }}" alt="Preview" class="rounded-circle border" style="width: 65px; height: 65px; object-fit: cover;">
+                            {% else %}
+                            <img src="https://ui-avatars.com/api/?name={{ user.full_name }}&background=f0f0f0&color=333&rounded=true&size=65" alt="Preview" class="rounded-circle border" style="width: 65px; height: 65px; object-fit: cover;">
+                            {% endif %}
+                            <input type="file" name="profile_picture" class="form-control" accept="image/*">
+                        </div>
+                        <div class="form-text">Supported formats: JPG, JPEG, PNG, GIF. Max 2MB.</div>
+                    </div>
+
                     <button type="submit" class="btn btn-primary w-100 fw-bold">
-                        <i class="bi bi-save me-1"></i> Update Contact Info
+                        <i class="bi bi-save me-1"></i> Update Personal Details
                     </button>
                 </form>
             </div>

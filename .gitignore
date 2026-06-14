@@ -12,3 +12,4 @@ diabetes_system.db
 *.egg-info/
 dist/
 build/
+static/uploads/

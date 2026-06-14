@@ -746,6 +746,7 @@ def login():
             session['user_id']    = user.id
             session['user_name']  = user.full_name
             session['user_email'] = user.email
+            session['profile_picture'] = user.profile_picture
             session['is_new_user'] = False
             return redirect(url_for('dashboard'))
 
@@ -1016,16 +1017,43 @@ def general_triage_result():
     gt = GeneralTriage.query.get(gt_id)
     return render_template('general_triage_result.html', gt=gt)
 
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
+
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
 @app.route('/profile', methods=['GET', 'POST'])
 @login_required
 def profile():
     user = User.query.get(session['user_id'])
     if request.method == 'POST':
-        phone = request.form.get('phone')
+        full_name = request.form.get('full_name', '').strip()
+        phone = request.form.get('phone', '').strip()
+        
+        if full_name:
+            user.full_name = full_name
+            session['user_name'] = full_name
         if phone:
             user.phone = phone
-            db.session.commit()
-            flash('Profile updated successfully.', 'profile_success')
+            
+        file = request.files.get('profile_picture')
+        if file and file.filename != '':
+            if allowed_file(file.filename):
+                from werkzeug.utils import secure_filename
+                ext = file.filename.rsplit('.', 1)[1].lower()
+                filename = f"user_{user.id}_{int(datetime.utcnow().timestamp())}.{ext}"
+                
+                upload_dir = os.path.join(app.root_path, 'static', 'uploads', 'profile_pics')
+                os.makedirs(upload_dir, exist_ok=True)
+                
+                file_path = os.path.join(upload_dir, filename)
+                file.save(file_path)
+                
+                user.profile_picture = filename
+                session['profile_picture'] = filename
+                
+        db.session.commit()
+        flash('Profile updated successfully.', 'profile_success')
         return redirect(url_for('profile'))
     return render_template('profile.html', user=user)
 
@@ -2175,6 +2203,12 @@ def handle_500(e):
 # Ensure database is ready before serving
 with app.app_context():
     db.create_all()   # also creates sms_logs table
+    # Dynamically ensure profile_picture column exists in users table
+    try:
+        db.session.execute(db.text("ALTER TABLE users ADD COLUMN profile_picture VARCHAR(200)"))
+        db.session.commit()
+    except Exception:
+        db.session.rollback()
     seed_doctors()
     seed_admin()
 
