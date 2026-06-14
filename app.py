@@ -55,6 +55,15 @@ if db_url.startswith('postgres://'):
 app.config['SQLALCHEMY_DATABASE_URI'] = db_url
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
+# Check if running in a deployed environment (Vercel or Render)
+is_deployed = (
+    os.environ.get('VERCEL') == '1' or 
+    os.environ.get('RENDER') == 'true' or 
+    'POSTGRES_URL' in os.environ or 
+    ('DATABASE_URL' in os.environ and 'sqlite' not in os.environ.get('DATABASE_URL', ''))
+)
+
+
 # Email Configuration (Gmail)
 app.config['MAIL_SERVER']   = os.environ.get('MAIL_SERVER', 'smtp.gmail.com')
 app.config['MAIL_PORT']     = int(os.environ.get('MAIL_PORT', 465))
@@ -455,13 +464,34 @@ def predict_quick():
 @app.route('/api/test_db')
 def test_db():
     try:
-        from database import User
-        # Try to count users
+        from database import User, Doctor, Admin
         user_count = User.query.count()
+        doctor_count = Doctor.query.count()
+        admin_count = Admin.query.count()
+        
+        doctors_info = []
+        for d in Doctor.query.all():
+            doctors_info.append({
+                "email": d.email,
+                "has_password": d.password_hash is not None,
+                "password_hash_val": d.password_hash[:20] if d.password_hash else None
+            })
+            
+        admins_info = []
+        for a in Admin.query.all():
+            admins_info.append({
+                "username": a.username,
+                "has_password": a.password_hash is not None
+            })
+            
         return {
             'success': True,
             'database_uri_host': app.config['SQLALCHEMY_DATABASE_URI'].split('@')[-1] if '@' in app.config['SQLALCHEMY_DATABASE_URI'] else 'local_sqlite',
-            'user_count': user_count
+            'user_count': user_count,
+            'doctor_count': doctor_count,
+            'admin_count': admin_count,
+            'doctors': doctors_info,
+            'admins': admins_info
         }
     except Exception as e:
         import traceback
@@ -545,7 +575,7 @@ def register():
 
             if not email_sent:
                 # Fallback for preview/development environments: print OTP to logs instead of blocking
-                if app.debug or not app.config['MAIL_PASSWORD']:
+                if is_deployed and (app.debug or not app.config['MAIL_PASSWORD']):
                     print(f"\n==================================================")
                     print(f"[DEVELOPER BYPASS] Email verification failed.")
                     print(f"VERIFICATION CODE (OTP): {otp}")
@@ -785,7 +815,7 @@ def forgot_password():
             except Exception as e:
                 print(f"Error sending email: {e}")
                 # Fallback for preview/development environments: print OTP to logs instead of blocking
-                if app.debug or not app.config['MAIL_PASSWORD']:
+                if is_deployed and (app.debug or not app.config['MAIL_PASSWORD']):
                     print(f"\n==================================================")
                     print(f"[DEVELOPER BYPASS] Password reset email failed.")
                     print(f"RESET CODE (OTP): {otp}")
