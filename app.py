@@ -445,11 +445,28 @@ def predict_quick():
             'message': risk_info['message'],
             'recommendation': risk_info['recommendation']
         }
+        }, 400
+
+
+@app.route('/api/test_db')
+def test_db():
+    try:
+        from database import User
+        # Try to count users
+        user_count = User.query.count()
+        return {
+            'success': True,
+            'database_uri_host': app.config['SQLALCHEMY_DATABASE_URI'].split('@')[-1] if '@' in app.config['SQLALCHEMY_DATABASE_URI'] else 'local_sqlite',
+            'user_count': user_count
+        }
     except Exception as e:
+        import traceback
         return {
             'success': False,
-            'error': str(e)
-        }, 400
+            'error': str(e),
+            'traceback': traceback.format_exc(),
+            'database_uri_host': app.config['SQLALCHEMY_DATABASE_URI'].split('@')[-1] if '@' in app.config['SQLALCHEMY_DATABASE_URI'] else 'local_sqlite'
+        }
 
 
 # ============================================================
