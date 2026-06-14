@@ -115,29 +115,11 @@ def format_phone(phone: str) -> str:
 
 def send_sms(to_phone: str, body: str, category: str = 'General') -> bool:
     """
-    Send an SMS via Africa's Talking and log the result.
-    Returns True on success, False on failure.
-    Never raises — the app keeps running even if SMS fails.
+    SMS dispatch is disabled. Logs are recorded in the database.
     """
     formatted = format_phone(to_phone)
-    status = 'failed'
-    try:
-        if _at_sms:
-            response = _at_sms.send(body, [formatted])
-            # Africa's Talking returns a recipients list; status 'Success' means delivered
-            recipients = response.get('SMSMessageData', {}).get('Recipients', [])
-            if recipients and recipients[0].get('status') == 'Success':
-                status = 'sent'
-                print(f"[SMS] Sent to {formatted}: {body[:60]}...")
-            else:
-                err = recipients[0].get('status', 'Unknown') if recipients else 'No recipients'
-                print(f"[SMS] AT delivery issue to {formatted}: {err}")
-        else:
-            print("[SMS] Africa's Talking not configured — skipping SMS.")
-    except Exception as e:
-        print(f"[SMS] Failed to send to {formatted}: {e}")
-
-    # Log to DB (best-effort — don't crash if DB isn't ready yet)
+    status = 'skipped'
+    print(f"[SMS DISABLED] Skipped sending message to {formatted}: {body[:60]}...")
     try:
         log = SMSLog(recipient=formatted, message=body,
                      status=status, category=category)
@@ -145,8 +127,7 @@ def send_sms(to_phone: str, body: str, category: str = 'General') -> bool:
         db.session.commit()
     except Exception:
         pass
-
-    return status == 'sent'
+    return True
 
 
 # ============================================================
@@ -565,13 +546,7 @@ def register():
                 print(f"[Email] Failed to send verification email: {e}")
                 email_sent = False
 
-            # ── Send OTP via SMS ────────────────────────────────
-            if phone:
-                sms_body = (
-                    f"DiabetesCare: Your verification code is {otp}.\n"
-                    f"Enter it to activate your account. Expires in 10 mins."
-                )
-                send_sms(phone, sms_body, category='OTP')
+            # SMS OTP dispatch disabled by request
 
             if not email_sent:
                 # Fallback for preview/development environments: print OTP to logs instead of blocking
@@ -825,13 +800,7 @@ def forgot_password():
                     error = "Failed to send the email. Please try again later."
                     return render_template('forgot_password.html', error=error)
 
-            # ── Send reset code via SMS ─────────────────────────
-            if user.phone:
-                sms_body = (
-                    f"DiabetesCare: Your password reset code is {otp}.\n"
-                    f"Valid for 10 minutes. If this wasn't you, ignore this."
-                )
-                send_sms(user.phone, sms_body, category='OTP')
+            # SMS OTP dispatch disabled by request
 
             return redirect(url_for('verify_reset_code'))
         else:
