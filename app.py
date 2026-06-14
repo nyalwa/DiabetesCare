@@ -2160,6 +2160,15 @@ def seed_admin():
 
 
 
+@app.errorhandler(500)
+def handle_500(e):
+    import traceback
+    return {
+        "error": "Internal Server Error",
+        "message": str(e),
+        "traceback": traceback.format_exc()
+    }, 500
+
 # ============================================================
 # RUN THE APP
 # ============================================================
