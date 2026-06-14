@@ -18,108 +18,110 @@
         </span>
     </div>
     <div class="card-body p-0">
-        <table class="table table-hover mb-0">
-            <thead>
-                <tr>
-                    <th>#</th>
-                    <th>
-                        <i class="bi bi-person-fill me-1"></i>
-                        Patient
-                    </th>
-                    <th>
-                        <i class="bi bi-activity me-1"></i>
-                        Risk Level
-                    </th>
-                    <th>
-                        <i class="bi bi-person-badge-fill me-1"></i>
-                        Doctor
-                    </th>
-                    <th>Specialization</th>
-                    <th>
-                        <i class="bi bi-calendar3 me-1"></i>
-                        Date
-                    </th>
-                    <th>
-                        <i class="bi bi-clock me-1"></i>
-                        Time
-                    </th>
-                    <th>Status</th>
-                    <th>Update</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for appt in appointments %}
-                <tr>
-                    <td>{{ appt.id }}</td>
-                    <td>
-                        <strong>
-                            {{ appt.patient.full_name }}
-                        </strong>
-                        <br>
-                        <small class="text-muted">
-                            <i class="bi bi-telephone-fill me-1"></i>
-                            {{ appt.patient.phone }}
-                        </small>
-                    </td>
-                    <td>
-                        <span class="badge
-                            {% if appt.patient.risk_level == 'High Risk' %}bg-danger
-                            {% elif appt.patient.risk_level == 'Medium Risk' %}bg-warning
-                            {% else %}bg-success{% endif %}">
-                            {% if appt.patient.risk_level == 'High Risk' %}
-                            <i class="bi bi-exclamation-triangle-fill me-1"></i>
-                            {% elif appt.patient.risk_level == 'Medium Risk' %}
-                            <i class="bi bi-exclamation-circle-fill me-1"></i>
-                            {% else %}
-                            <i class="bi bi-check-circle-fill me-1"></i>
-                            {% endif %}
-                            {{ appt.patient.risk_level }}
-                        </span>
-                    </td>
-                    <td>
-                        <strong>{{ appt.doctor.full_name }}</strong>
-                    </td>
-                    <td>
-                        <span class="badge bg-primary">
-                            {{ appt.doctor.specialization }}
-                        </span>
-                    </td>
-                    <td>{{ appt.appointment_date }}</td>
-                    <td>{{ appt.appointment_time }}</td>
-                    <td>
-                        <span class="badge
-                            {% if appt.status == 'Confirmed' %}bg-primary
-                            {% elif appt.status == 'Pending' %}bg-warning text-dark
-                            {% elif appt.status == 'Completed' %}bg-success
-                            {% elif appt.status == 'Cancelled' %}bg-danger
-                            {% else %}bg-secondary{% endif %}">
-                            {{ appt.status }}
-                        </span>
-                    </td>
-                    <td>
-                        <div class="btn-group">
-                            <button type="button" class="btn btn-sm btn-outline-info" data-bs-toggle="modal" data-bs-target="#profileModalAppt{{ appt.id }}">
-                                <i class="bi bi-person-lines-fill"></i> Profile
-                            </button>
-                            <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#updateModal{{ appt.id }}">
-                                <i class="bi bi-pencil-square"></i> Update
-                            </button>
-                        </div>
-                    </td>
-                </tr>
-
-
-                {% else %}
-                <tr>
-                    <td colspan="9" class="text-center text-muted py-5">
-                        <i class="bi bi-calendar-x
-                                  display-4 d-block mb-3"></i>
-                        No appointments booked yet.
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>
+                            <i class="bi bi-person-fill me-1"></i>
+                            Patient
+                        </th>
+                        <th>
+                            <i class="bi bi-activity me-1"></i>
+                            Risk Level
+                        </th>
+                        <th>
+                            <i class="bi bi-person-badge-fill me-1"></i>
+                            Doctor
+                        </th>
+                        <th>Specialization</th>
+                        <th>
+                            <i class="bi bi-calendar3 me-1"></i>
+                            Date
+                        </th>
+                        <th>
+                            <i class="bi bi-clock me-1"></i>
+                            Time
+                        </th>
+                        <th>Status</th>
+                        <th>Update</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for appt in appointments %}
+                    <tr>
+                        <td>{{ appt.id }}</td>
+                        <td>
+                            <strong>
+                                {{ appt.patient.full_name }}
+                            </strong>
+                            <br>
+                            <small class="text-muted">
+                                <i class="bi bi-telephone-fill me-1"></i>
+                                {{ appt.patient.phone }}
+                            </small>
+                        </td>
+                        <td>
+                            <span class="badge
+                                {% if appt.patient.risk_level == 'High Risk' %}bg-danger
+                                {% elif appt.patient.risk_level == 'Medium Risk' %}bg-warning
+                                {% else %}bg-success{% endif %}">
+                                {% if appt.patient.risk_level == 'High Risk' %}
+                                <i class="bi bi-exclamation-triangle-fill me-1"></i>
+                                {% elif appt.patient.risk_level == 'Medium Risk' %}
+                                <i class="bi bi-exclamation-circle-fill me-1"></i>
+                                {% else %}
+                                <i class="bi bi-check-circle-fill me-1"></i>
+                                {% endif %}
+                                {{ appt.patient.risk_level }}
+                            </span>
+                        </td>
+                        <td>
+                            <strong>{{ appt.doctor.full_name }}</strong>
+                        </td>
+                        <td>
+                            <span class="badge bg-primary">
+                                {{ appt.doctor.specialization }}
+                            </span>
+                        </td>
+                        <td>{{ appt.appointment_date }}</td>
+                        <td>{{ appt.appointment_time }}</td>
+                        <td>
+                            <span class="badge
+                                {% if appt.status == 'Confirmed' %}bg-primary
+                                {% elif appt.status == 'Pending' %}bg-warning text-dark
+                                {% elif appt.status == 'Completed' %}bg-success
+                                {% elif appt.status == 'Cancelled' %}bg-danger
+                                {% else %}bg-secondary{% endif %}">
+                                {{ appt.status }}
+                            </span>
+                        </td>
+                        <td>
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-sm btn-outline-info" data-bs-toggle="modal" data-bs-target="#profileModalAppt{{ appt.id }}">
+                                    <i class="bi bi-person-lines-fill"></i> Profile
+                                </button>
+                                <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#updateModal{{ appt.id }}">
+                                    <i class="bi bi-pencil-square"></i> Update
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+    
+    
+                    {% else %}
+                    <tr>
+                        <td colspan="9" class="text-center text-muted py-5">
+                            <i class="bi bi-calendar-x
+                                      display-4 d-block mb-3"></i>
+                            No appointments booked yet.
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
 

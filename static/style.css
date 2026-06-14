@@ -1286,6 +1286,20 @@ footer {
    RESPONSIVE
    ============================================================ */
 
+@media (max-width: 991px) {
+    .main-content {
+        margin-left: 0;
+    }
+
+    .sidebar {
+        display: none;
+    }
+
+    .topbar {
+        padding: 15px;
+    }
+}
+
 @media (max-width: 768px) {
     .hero-section {
         padding: 70px 0 50px;
@@ -1297,18 +1311,6 @@ footer {
 
     .stat-number {
         font-size: 2.2rem;
-    }
-
-    .main-content {
-        margin-left: 0;
-    }
-
-    .sidebar {
-        display: none;
-    }
-
-    .topbar {
-        padding: 15px;
     }
 }
 

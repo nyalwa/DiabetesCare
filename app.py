@@ -949,6 +949,7 @@ def direct_booking(doctor_id):
     
     # Create baseline record
     baseline_patient = Patient(
+        user_id=user_id,
         full_name=user.full_name,
         age=0,
         gender="Not Specified",

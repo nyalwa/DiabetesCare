@@ -16,83 +16,85 @@
                 </a>
             </div>
             <div class="card-body p-0">
-                <table class="table table-hover mb-0">
-                    <thead class="bg-light">
-                        <tr>
-                            <th class="border-0 px-4 py-3">Doctor</th>
-                            <th class="border-0 py-3">Specialization</th>
-                            <th class="border-0 py-3">Date</th>
-                            <th class="border-0 py-3">Time</th>
-                            <th class="border-0 py-3">Status</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% if appointments %}
-                        {% for appt in appointments %}
-                        <tr>
-                            <td class="px-4 py-3">
-                                <div class="fw-bold">{{ appt.doctor.full_name }}</div>
-                                <div class="text-muted small"><i class="bi bi-hospital me-1"></i>{{ appt.doctor.hospital
-                                    }}</div>
-                            </td>
-                            <td class="py-3">
-                                <span class="badge bg-light text-dark border">{{ appt.doctor.specialization }}</span>
-                            </td>
-                            <td class="py-3">{{ appt.appointment_date }}</td>
-                            <td class="py-3">{{ appt.appointment_time }}</td>
-                            <td class="py-3">
-                                <span class="badge
-                                        {% if appt.status == 'Confirmed' %}bg-primary
-                                        {% elif appt.status == 'Pending' %}bg-warning text-dark
-                                        {% elif appt.status == 'Completed' %}bg-success
-                                        {% elif appt.status == 'Cancelled' %}bg-danger
-                                        {% else %}bg-secondary{% endif %}">
-                                    {{ appt.status }}
-                                </span>
-                            </td>
-                        </tr>
-                        {% if appt.admin_notes %}
-        <tr>
-            <td colspan="5" class="px-4 py-2
-                {% if appt.status == 'Confirmed' %}bg-success bg-opacity-10 border-start border-4 border-success
-                {% elif appt.status == 'Cancelled' %}bg-danger bg-opacity-10 border-start border-4 border-danger
-                {% elif appt.status == 'Completed' %}bg-primary bg-opacity-10 border-start border-4 border-primary
-                {% else %}bg-light border-start border-4 border-secondary{% endif %}">
-                <strong
-                    class="{% if appt.status == 'Confirmed' %}text-success
-                           {% elif appt.status == 'Cancelled' %}text-danger
-                           {% elif appt.status == 'Completed' %}text-primary
-                           {% else %}text-secondary{% endif %}">
-                    {% if appt.status == 'Confirmed' %}
-                        <i class="bi bi-check-circle-fill me-1"></i> Confirmation Note:
-                    {% elif appt.status == 'Cancelled' %}
-                        <i class="bi bi-x-circle-fill me-1"></i> Cancellation Reason:
-                    {% elif appt.status == 'Completed' %}
-                        <i class="bi bi-patch-check-fill me-1"></i> Clinic Note:
-                    {% else %}
-                        <i class="bi bi-hourglass-split me-1"></i> Pending Note:
-                    {% endif %}
-                </strong>
-                <span class="text-muted ms-1">{{ appt.admin_notes }}</span>
-            </td>
-        </tr>
-        {% endif %}
-                        {% endfor %}
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead class="bg-light">
+                            <tr>
+                                <th class="border-0 px-4 py-3">Doctor</th>
+                                <th class="border-0 py-3">Specialization</th>
+                                <th class="border-0 py-3">Date</th>
+                                <th class="border-0 py-3">Time</th>
+                                <th class="border-0 py-3">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% if appointments %}
+                            {% for appt in appointments %}
+                            <tr>
+                                <td class="px-4 py-3">
+                                    <div class="fw-bold">{{ appt.doctor.full_name }}</div>
+                                    <div class="text-muted small"><i class="bi bi-hospital me-1"></i>{{ appt.doctor.hospital
+                                        }}</div>
+                                </td>
+                                <td class="py-3">
+                                    <span class="badge bg-light text-dark border">{{ appt.doctor.specialization }}</span>
+                                </td>
+                                <td class="py-3">{{ appt.appointment_date }}</td>
+                                <td class="py-3">{{ appt.appointment_time }}</td>
+                                <td class="py-3">
+                                    <span class="badge
+                                            {% if appt.status == 'Confirmed' %}bg-primary
+                                            {% elif appt.status == 'Pending' %}bg-warning text-dark
+                                            {% elif appt.status == 'Completed' %}bg-success
+                                            {% elif appt.status == 'Cancelled' %}bg-danger
+                                            {% else %}bg-secondary{% endif %}">
+                                        {{ appt.status }}
+                                    </span>
+                                </td>
+                            </tr>
+                            {% if appt.admin_notes %}
+            <tr>
+                <td colspan="5" class="px-4 py-2
+                    {% if appt.status == 'Confirmed' %}bg-success bg-opacity-10 border-start border-4 border-success
+                    {% elif appt.status == 'Cancelled' %}bg-danger bg-opacity-10 border-start border-4 border-danger
+                    {% elif appt.status == 'Completed' %}bg-primary bg-opacity-10 border-start border-4 border-primary
+                    {% else %}bg-light border-start border-4 border-secondary{% endif %}">
+                    <strong
+                        class="{% if appt.status == 'Confirmed' %}text-success
+                               {% elif appt.status == 'Cancelled' %}text-danger
+                               {% elif appt.status == 'Completed' %}text-primary
+                               {% else %}text-secondary{% endif %}">
+                        {% if appt.status == 'Confirmed' %}
+                            <i class="bi bi-check-circle-fill me-1"></i> Confirmation Note:
+                        {% elif appt.status == 'Cancelled' %}
+                            <i class="bi bi-x-circle-fill me-1"></i> Cancellation Reason:
+                        {% elif appt.status == 'Completed' %}
+                            <i class="bi bi-patch-check-fill me-1"></i> Clinic Note:
                         {% else %}
-                        <tr>
-                            <td colspan="5" class="text-center py-5">
-                                <div class="mb-3 text-muted">
-                                    <i class="bi bi-calendar-x display-5"></i>
-                                </div>
-                                <h5 class="text-muted fw-bold">No appointments found.</h5>
-                                <p class="text-muted small mb-4">You haven't booked any appointments yet.</p>
-                                <a href="{{ url_for('browse_doctors') }}" class="btn btn-primary rounded-pill px-4">Find
-                                    a Doctor</a>
-                            </td>
-                        </tr>
+                            <i class="bi bi-hourglass-split me-1"></i> Pending Note:
                         {% endif %}
-                    </tbody>
-                </table>
+                    </strong>
+                    <span class="text-muted ms-1">{{ appt.admin_notes }}</span>
+                </td>
+            </tr>
+            {% endif %}
+                            {% endfor %}
+                            {% else %}
+                            <tr>
+                                <td colspan="5" class="text-center py-5">
+                                    <div class="mb-3 text-muted">
+                                        <i class="bi bi-calendar-x display-5"></i>
+                                    </div>
+                                    <h5 class="text-muted fw-bold">No appointments found.</h5>
+                                    <p class="text-muted small mb-4">You haven't booked any appointments yet.</p>
+                                    <a href="{{ url_for('browse_doctors') }}" class="btn btn-primary rounded-pill px-4">Find
+                                        a Doctor</a>
+                                </td>
+                            </tr>
+                            {% endif %}
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
