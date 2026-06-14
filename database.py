@@ -75,6 +75,8 @@ class Doctor(db.Model):
         self.password_hash = generate_password_hash(password)
 
     def check_password(self, password):
+        if not self.password_hash:
+            return False
         from werkzeug.security import check_password_hash
         return check_password_hash(self.password_hash, password)
 
@@ -124,6 +126,8 @@ class Admin(db.Model):
         self.password_hash = generate_password_hash(password)
 
     def check_password(self, password):
+        if not self.password_hash:
+            return False
         return check_password_hash(self.password_hash, password)
 
     def __repr__(self):
@@ -150,6 +154,8 @@ class User(db.Model):
 
     def check_password(self, password):
         # Verify password against hash
+        if not self.password_hash:
+            return False
         return check_password_hash(self.password_hash, password)
 
     def __init__(self, full_name, email, phone):

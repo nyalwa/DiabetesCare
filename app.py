@@ -2114,6 +2114,14 @@ def seed_doctors():
         db.session.add_all(doctors)
         db.session.commit()
         print("✅ 9 doctors added with default passwords!")
+    else:
+        # Update any doctor with missing password hash
+        unhashed_doctors = Doctor.query.filter((Doctor.password_hash == None) | (Doctor.password_hash == '')).all()
+        if unhashed_doctors:
+            for doctor in unhashed_doctors:
+                doctor.set_password('doctor123')
+            db.session.commit()
+            print(f"✅ Updated {len(unhashed_doctors)} doctors with default password!")
 
 
 def seed_admin():
@@ -2139,6 +2147,16 @@ def seed_admin():
         db.session.add(admin2)
         db.session.commit()
         print("[SUCCESS] Admin and Receptionist accounts created!")
+    else:
+        # Update any admin with missing password hash
+        admin = Admin.query.filter_by(username='admin').first()
+        if admin and not admin.password_hash:
+            admin.set_password('admin123')
+            db.session.commit()
+        receptionist = Admin.query.filter_by(username='receptionist').first()
+        if receptionist and not receptionist.password_hash:
+            receptionist.set_password('receptionist123')
+            db.session.commit()
 
 
 
