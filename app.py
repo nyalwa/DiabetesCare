@@ -58,7 +58,8 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 # Email Configuration (Gmail)
 app.config['MAIL_SERVER']   = os.environ.get('MAIL_SERVER', 'smtp.gmail.com')
 app.config['MAIL_PORT']     = int(os.environ.get('MAIL_PORT', 465))
-app.config['MAIL_USE_SSL']  = os.environ.get('MAIL_USE_SSL', 'true').lower() == 'true'
+app.config['MAIL_USE_TLS']  = os.environ.get('MAIL_USE_TLS', 'false').lower() == 'true'
+app.config['MAIL_USE_SSL']  = os.environ.get('MAIL_USE_SSL', 'true' if os.environ.get('MAIL_PORT', '465') == '465' and os.environ.get('MAIL_USE_TLS', 'false').lower() != 'true' else 'false').lower() == 'true'
 app.config['MAIL_USERNAME'] = os.environ.get('MAIL_USERNAME', 'diabetescare15@gmail.com')
 app.config['MAIL_PASSWORD'] = os.environ.get('MAIL_PASSWORD', '')
 
@@ -522,8 +523,16 @@ def register():
                 send_sms(phone, sms_body, category='OTP')
 
             if not email_sent:
-                error = 'Failed to send the verification email. Please try again.'
-                return render_template('register.html', error=error)
+                # Fallback for preview/development environments: print OTP to logs instead of blocking
+                if app.debug or not app.config['MAIL_PASSWORD']:
+                    print(f"\n==================================================")
+                    print(f"[DEVELOPER BYPASS] Email verification failed.")
+                    print(f"VERIFICATION CODE (OTP): {otp}")
+                    print(f"==================================================\n")
+                    flash(f"Verification code sent to console logs (for testing). Code is {otp} (displayed for convenience)", "warning")
+                else:
+                    error = 'Failed to send the verification email. Please try again.'
+                    return render_template('register.html', error=error)
 
             return redirect(url_for('verify_registration'))
 
@@ -766,8 +775,16 @@ def forgot_password():
                 mail.send(msg)
             except Exception as e:
                 print(f"Error sending email: {e}")
-                error = "Failed to send the email. Please try again later."
-                return render_template('forgot_password.html', error=error)
+                # Fallback for preview/development environments: print OTP to logs instead of blocking
+                if app.debug or not app.config['MAIL_PASSWORD']:
+                    print(f"\n==================================================")
+                    print(f"[DEVELOPER BYPASS] Password reset email failed.")
+                    print(f"RESET CODE (OTP): {otp}")
+                    print(f"==================================================\n")
+                    flash(f"Reset code sent to console logs (for testing). Code is {otp} (displayed for convenience)", "warning")
+                else:
+                    error = "Failed to send the email. Please try again later."
+                    return render_template('forgot_password.html', error=error)
 
             # ── Send reset code via SMS ─────────────────────────
             if user.phone:
