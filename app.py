@@ -445,6 +445,10 @@ def predict_quick():
             'message': risk_info['message'],
             'recommendation': risk_info['recommendation']
         }
+    except Exception as e:
+        return {
+            'success': False,
+            'error': str(e)
         }, 400
 
 
