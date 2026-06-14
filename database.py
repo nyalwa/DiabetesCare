@@ -78,7 +78,10 @@ class Doctor(db.Model):
         if not self.password_hash:
             return False
         from werkzeug.security import check_password_hash
-        return check_password_hash(self.password_hash, password)
+        try:
+            return check_password_hash(self.password_hash, password)
+        except (ValueError, TypeError):
+            return self.password_hash == password
 
     def __repr__(self):
         return f'<Doctor {self.full_name} - {self.specialization}>'
@@ -128,7 +131,11 @@ class Admin(db.Model):
     def check_password(self, password):
         if not self.password_hash:
             return False
-        return check_password_hash(self.password_hash, password)
+        from werkzeug.security import check_password_hash
+        try:
+            return check_password_hash(self.password_hash, password)
+        except (ValueError, TypeError):
+            return self.password_hash == password
 
     def __repr__(self):
         return f'<Admin {self.username} - {self.role}>'
@@ -156,7 +163,11 @@ class User(db.Model):
         # Verify password against hash
         if not self.password_hash:
             return False
-        return check_password_hash(self.password_hash, password)
+        from werkzeug.security import check_password_hash
+        try:
+            return check_password_hash(self.password_hash, password)
+        except (ValueError, TypeError):
+            return self.password_hash == password
 
     def __init__(self, full_name, email, phone):
         self.full_name = full_name
