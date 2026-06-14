@@ -56,9 +56,12 @@
 <body>
 
     <div class="sidebar doctor-sidebar">
-        <div class="doctor-sidebar-brand d-flex align-items-center">
-            <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo" class="me-2" style="height: 30px; width: 30px; border-radius: 6px; border: 1px solid rgba(255, 255, 255, 0.2); object-fit: cover;">
-            Diabetes<span class="brand-care"> Detection System</span>
+        <div class="doctor-sidebar-brand d-flex align-items-center gap-2">
+            <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo" style="height: 35px; width: 35px; border-radius: 6px; border: 1px solid rgba(255, 255, 255, 0.2); object-fit: cover;">
+            <div class="d-flex flex-column" style="line-height: 1.1;">
+                <span style="font-size: 1.25rem; font-weight: 800; color: #fff; display: block;">Diabetes</span>
+                <span class="brand-care" style="font-size: 0.95rem; font-weight: 700; color: var(--accent); display: block;">Detection System</span>
+            </div>
         </div>
         <div class="doctor-sidebar-role">
             Medical Specialist
