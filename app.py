@@ -952,7 +952,7 @@ def direct_booking(doctor_id):
         user_id=user_id,
         full_name=user.full_name,
         age=0,
-        gender="Not Specified",
+        gender="Unknown",
         phone=user.phone,
         email=user.email,
         pregnancies=0.0,
