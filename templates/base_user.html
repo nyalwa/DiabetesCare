@@ -172,10 +172,30 @@
 
         <!-- Top Bar -->
         <div class="topbar">
-            <h5 class="mb-0">
-                <i class="bi bi-grid-fill me-2 text-success"></i>
-                {% block page_title %}Dashboard{% endblock %}
-            </h5>
+            <div class="d-flex align-items-center">
+                <!-- Mobile Hamburger Dropdown (Visible on screens smaller than 992px) -->
+                <div class="dropdown d-lg-none me-3">
+                    <button class="btn btn-link text-dark p-0 border-0" type="button" id="patientMobileNavDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="bi bi-list fs-2" style="color: #1a237e;"></i>
+                    </button>
+                    <ul class="dropdown-menu shadow-lg border-0 py-2 mt-2" aria-labelledby="patientMobileNavDropdown" style="border-radius: 12px; min-width: 220px;">
+                        <li><a class="dropdown-item py-2 px-3 {% if request.endpoint == 'dashboard' %}active bg-primary{% endif %}" href="{{ url_for('dashboard') }}"><i class="bi bi-newspaper me-2"></i> My Dashboard</a></li>
+                        <li><a class="dropdown-item py-2 px-3 {% if request.endpoint == 'explore' %}active bg-primary{% endif %}" href="{{ url_for('explore') }}"><i class="bi bi-list-task me-2"></i> Insights & Education</a></li>
+                        <li><a class="dropdown-item py-2 px-3 {% if request.endpoint == 'general_triage' %}active bg-primary{% endif %}" href="{{ url_for('general_triage') }}"><i class="bi bi-check-square me-2"></i> New Assessment</a></li>
+                        <li><a class="dropdown-item py-2 px-3 {% if request.endpoint == 'my_appointments' %}active bg-primary{% endif %}" href="{{ url_for('my_appointments') }}"><i class="bi bi-graph-up-arrow me-2"></i> My Appointments</a></li>
+                        <li><a class="dropdown-item py-2 px-3 {% if request.endpoint == 'browse_doctors' %}active bg-primary{% endif %}" href="{{ url_for('browse_doctors') }}"><i class="bi bi-heart-fill me-2"></i> Find a Doctor</a></li>
+                        <li><a class="dropdown-item py-2 px-3 {% if request.endpoint == 'profile' %}active bg-primary{% endif %}" href="{{ url_for('profile') }}"><i class="bi bi-person-vcard me-2"></i> General Information</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item py-2 px-3" href="{{ url_for('index') }}"><i class="bi bi-globe me-2"></i> MAIN SITE</a></li>
+                        <li><a class="dropdown-item py-2 px-3 text-danger" href="{{ url_for('user_logout') }}"><i class="bi bi-box-arrow-left me-2"></i> SECURE LOGOUT</a></li>
+                    </ul>
+                </div>
+                
+                <h5 class="mb-0">
+                    <i class="bi bi-grid-fill me-2 text-success"></i>
+                    {% block page_title %}Dashboard{% endblock %}
+                </h5>
+            </div>
         </div>
 
         <!-- Page Content -->
