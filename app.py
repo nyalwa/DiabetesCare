@@ -47,9 +47,9 @@ except ImportError:
 app = Flask(__name__)
 app.secret_key = os.environ.get('SECRET_KEY', 'diabetescare_secret_key_2024_local')
 
-# Database — uses DATABASE_URL on Render, SQLite locally
-db_url = os.environ.get('DATABASE_URL', 'sqlite:///diabetes_system.db')
-# Render gives postgres:// but SQLAlchemy needs postgresql://
+# Database — uses DATABASE_URL on Render/Heroku or POSTGRES_URL on Vercel, SQLite locally
+db_url = os.environ.get('DATABASE_URL') or os.environ.get('POSTGRES_URL') or os.environ.get('POSTGRES_PRISMA_URL') or 'sqlite:///diabetes_system.db'
+# Render/Vercel gives postgres:// but SQLAlchemy needs postgresql://
 if db_url.startswith('postgres://'):
     db_url = db_url.replace('postgres://', 'postgresql://', 1)
 app.config['SQLALCHEMY_DATABASE_URI'] = db_url
@@ -2082,9 +2082,12 @@ def seed_doctors():
                 available=True
             ),
         ]
+        # Set default password hash for all doctors
+        for doctor in doctors:
+            doctor.set_password('doctor123')
         db.session.add_all(doctors)
         db.session.commit()
-        print("✅ 9 doctors added!")
+        print("✅ 9 doctors added with default passwords!")
 
 
 def seed_admin():
