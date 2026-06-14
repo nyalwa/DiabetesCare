@@ -30,35 +30,6 @@
     <!-- Card -->
     <div class="unified-login-card">
 
-      <!-- Role selector tabs -->
-      <div class="unified-role-tabs">
-
-        <input type="radio" name="role_choice" id="rc-patient"
-               class="role-radio" value="patient"
-               {% if selected_role == 'patient' %}checked{% endif %}>
-        <label for="rc-patient" class="role-tab-label" onclick="selectRole('patient')">
-          <i class="bi bi-person-heart"></i>
-          <span>Patient</span>
-        </label>
-
-        <input type="radio" name="role_choice" id="rc-doctor"
-               class="role-radio" value="doctor"
-               {% if selected_role == 'doctor' %}checked{% endif %}>
-        <label for="rc-doctor" class="role-tab-label" onclick="selectRole('doctor')">
-          <i class="bi bi-person-badge-fill"></i>
-          <span>Doctor</span>
-        </label>
-
-        <input type="radio" name="role_choice" id="rc-admin"
-               class="role-radio" value="admin"
-               {% if selected_role == 'admin' %}checked{% endif %}>
-        <label for="rc-admin" class="role-tab-label" onclick="selectRole('admin')">
-          <i class="bi bi-shield-lock-fill"></i>
-          <span>Admin</span>
-        </label>
-
-      </div><!-- /role tabs -->
-
       <!-- Error -->
       {% if error %}
       <div class="unified-login-error">
@@ -68,21 +39,20 @@
 
       <!-- Form -->
       <form method="POST" id="loginForm" class="unified-login-form">
-        <input type="hidden" name="role" id="roleInput" value="{{ selected_role }}">
 
         <!-- Identifier -->
         <div class="ulg-field">
-          <label class="ulg-label" id="identifierLabel">
-            <i class="bi bi-envelope-fill me-1"></i>
-            <span id="identifierLabelText">Email Address</span>
+          <label class="ulg-label">
+            <i class="bi bi-person-fill me-1"></i>
+            <span>Username or Email Address</span>
           </label>
           <div class="ulg-input-wrap">
-            <i class="bi bi-envelope-fill ulg-input-icon" id="identifierIcon"></i>
-            <input type="email"
+            <i class="bi bi-person-fill ulg-input-icon"></i>
+            <input type="text"
                    name="identifier"
                    id="identifierInput"
                    class="ulg-input"
-                   placeholder="Enter your email"
+                   placeholder="Enter your username or email"
                    autocomplete="username"
                    required autofocus>
           </div>
@@ -116,11 +86,11 @@
         <!-- Submit -->
         <button type="submit" class="ulg-submit">
           <i class="bi bi-box-arrow-in-right me-2"></i>
-          Sign in as <span id="roleLabel">Patient</span>
+          Sign In
         </button>
       </form>
 
-      <!-- Divider + Register (patient only) -->
+      <!-- Divider + Register -->
       <div id="registerSection" class="ulg-register">
         <span class="ulg-divider-text">New to the system?</span>
         <a href="{{ url_for('register') }}" class="ulg-register-link">
@@ -136,61 +106,6 @@
 
 {% block scripts %}
 <script>
-  const roleConfig = {
-    patient: {
-      labelText:   'Email Address',
-      iconClass:   'bi-envelope-fill',
-      placeholder: 'Enter your email',
-      inputType:   'email',
-      roleLabel:   'Patient',
-      showRegister: true,
-      showForgot:  true,
-    },
-    doctor: {
-      labelText:   'Email Address',
-      iconClass:   'bi-envelope-fill',
-      placeholder: 'Enter your doctor email',
-      inputType:   'email',
-      roleLabel:   'Doctor',
-      showRegister: false,
-      showForgot:  false,
-    },
-    admin: {
-      labelText:   'Username',
-      iconClass:   'bi-person-badge-fill',
-      placeholder: 'Enter your username',
-      inputType:   'text',
-      roleLabel:   'Admin',
-      showRegister: false,
-      showForgot:  false,
-    },
-  };
-
-  function selectRole(role) {
-    document.getElementById('roleInput').value = role;
-
-    const cfg = roleConfig[role];
-
-    // Identifier field
-    document.getElementById('identifierLabelText').textContent = cfg.labelText;
-    const icon = document.getElementById('identifierIcon');
-    icon.className = 'bi ' + cfg.iconClass + ' ulg-input-icon';
-    const inp = document.getElementById('identifierInput');
-    inp.type        = cfg.inputType;
-    inp.placeholder = cfg.placeholder;
-
-    // Submit label
-    document.getElementById('roleLabel').textContent = cfg.roleLabel;
-
-    // Register section
-    document.getElementById('registerSection').style.display =
-      cfg.showRegister ? '' : 'none';
-
-    // Forgot password link
-    document.getElementById('forgotLink').style.display =
-      cfg.showForgot ? '' : 'none';
-  }
-
   function togglePassword() {
     const f = document.getElementById('passwordInput');
     const i = document.getElementById('eyeIcon');
@@ -202,8 +117,5 @@
       i.className = 'bi bi-eye-fill';
     }
   }
-
-  // Initialise on load with server-set role
-  selectRole('{{ selected_role }}');
 </script>
 {% endblock %}

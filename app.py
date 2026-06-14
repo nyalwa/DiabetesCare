@@ -712,53 +712,41 @@ def login():
         return redirect(url_for('doctor_dashboard'))
 
     error = None
-    # Pre-select role from query param (e.g. /login?role=doctor)
-    selected_role = request.args.get('role', 'patient')
 
     if request.method == 'POST':
-        role     = request.form.get('role', 'patient')
-        password = request.form.get('password', '')
-        selected_role = role
+        identifier = request.form.get('identifier', '').strip()
+        password   = request.form.get('password', '')
 
-        # ── Patient ─────────────────────────────────────────────
-        if role == 'patient':
-            email = request.form.get('identifier', '').strip().lower()
-            user  = User.query.filter_by(email=email).first()
-            if user and user.check_password(password):
-                session['user_id']    = user.id
-                session['user_name']  = user.full_name
-                session['user_email'] = user.email
-                session['is_new_user'] = False
-                return redirect(url_for('dashboard'))
-            else:
-                error = 'Invalid email or password.'
+        # 1. Check Admin (by username)
+        admin = Admin.query.filter_by(username=identifier).first()
+        if admin and admin.check_password(password):
+            session.clear()
+            session['admin_id']   = admin.id
+            session['admin_name'] = admin.full_name
+            session['admin_role'] = admin.role
+            return redirect(url_for('admin_dashboard'))
 
-        # ── Doctor ──────────────────────────────────────────────
-        elif role == 'doctor':
-            email  = request.form.get('identifier', '').strip().lower()
-            doctor = Doctor.query.filter_by(email=email).first()
-            if doctor and doctor.check_password(password):
-                session.clear()
-                session['doctor_id']   = doctor.id
-                session['doctor_name'] = doctor.full_name
-                return redirect(url_for('doctor_dashboard'))
-            else:
-                error = 'Invalid email or password.'
+        # 2. Check Doctor (by email)
+        doctor = Doctor.query.filter_by(email=identifier.lower()).first()
+        if doctor and doctor.check_password(password):
+            session.clear()
+            session['doctor_id']   = doctor.id
+            session['doctor_name'] = doctor.full_name
+            return redirect(url_for('doctor_dashboard'))
 
-        # ── Admin ───────────────────────────────────────────────
-        elif role == 'admin':
-            username = request.form.get('identifier', '').strip()
-            admin    = Admin.query.filter_by(username=username).first()
-            if admin and admin.check_password(password):
-                session.clear()
-                session['admin_id']   = admin.id
-                session['admin_name'] = admin.full_name
-                session['admin_role'] = admin.role
-                return redirect(url_for('admin_dashboard'))
-            else:
-                error = 'Invalid username or password.'
+        # 3. Check Patient (User) (by email)
+        user = User.query.filter_by(email=identifier.lower()).first()
+        if user and user.check_password(password):
+            session.clear()
+            session['user_id']    = user.id
+            session['user_name']  = user.full_name
+            session['user_email'] = user.email
+            session['is_new_user'] = False
+            return redirect(url_for('dashboard'))
 
-    return render_template('login.html', error=error, selected_role=selected_role)
+        error = 'Invalid username/email or password.'
+
+    return render_template('login.html', error=error)
 
 
 # ============================================================
