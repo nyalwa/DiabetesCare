@@ -1023,6 +1023,29 @@ ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
+def get_upload_dir():
+    path = os.path.join(app.root_path, 'static', 'uploads', 'profile_pics')
+    try:
+        os.makedirs(path, exist_ok=True)
+        test_file = os.path.join(path, '.write_test')
+        with open(test_file, 'w') as f:
+            f.write('test')
+        os.remove(test_file)
+        return path
+    except Exception:
+        fallback_path = os.path.join('/tmp', 'uploads', 'profile_pics')
+        os.makedirs(fallback_path, exist_ok=True)
+        return fallback_path
+
+@app.route('/static/uploads/profile_pics/<path:filename>')
+def serve_profile_pic(filename):
+    from flask import send_from_directory
+    standard_dir = os.path.join(app.root_path, 'static', 'uploads', 'profile_pics')
+    if os.path.exists(os.path.join(standard_dir, filename)):
+        return send_from_directory(standard_dir, filename)
+    fallback_dir = os.path.join('/tmp', 'uploads', 'profile_pics')
+    return send_from_directory(fallback_dir, filename)
+
 @app.route('/profile', methods=['GET', 'POST'])
 @login_required
 def profile():
@@ -1044,9 +1067,7 @@ def profile():
                 ext = file.filename.rsplit('.', 1)[1].lower()
                 filename = f"user_{user.id}_{int(datetime.utcnow().timestamp())}.{ext}"
                 
-                upload_dir = os.path.join(app.root_path, 'static', 'uploads', 'profile_pics')
-                os.makedirs(upload_dir, exist_ok=True)
-                
+                upload_dir = get_upload_dir()
                 file_path = os.path.join(upload_dir, filename)
                 file.save(file_path)
                 
